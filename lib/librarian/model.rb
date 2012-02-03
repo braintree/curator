@@ -1,3 +1,5 @@
+require 'active_support'
+
 module Librarian
   module Model
     extend ActiveSupport::Concern

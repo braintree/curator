@@ -9,4 +9,5 @@ Gem::Specification.new do |s|
   s.files       = Dir.glob("lib/**/*.rb")
 
   s.add_dependency('activesupport', '>= 3.0.0')
+  s.add_dependency('json')
 end

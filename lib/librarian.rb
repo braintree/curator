@@ -1,4 +1,5 @@
-gem 'activesupport'
-require 'active_support'
+require 'rubygems'
 
 require 'librarian/model'
+require 'librarian/riak/data_store'
+require 'librarian/repository'
