@@ -9,6 +9,7 @@ Gem::Specification.new do |s|
   s.files       = Dir.glob("lib/**/*.rb")
 
   s.add_dependency('activesupport', '>= 3.0.0')
+  s.add_dependency('activemodel', '>= 3.0.0')
   s.add_dependency('json')
   s.add_dependency('riak-client', '>= 1.0.0')
 end

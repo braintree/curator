@@ -48,4 +48,17 @@ describe Librarian::Model do
       instance.version.should == 12
     end
   end
+
+  describe "ActiveModel" do
+    it "extends ActiveModel::Naming" do
+      TestModel.model_name.should == "TestModel"
+      TestModel.singleton_class.ancestors.should include(ActiveModel::Naming)
+    end
+
+    it "includes ActiveModel::Conversion" do
+      TestModel.new.to_param.should be_nil
+      TestModel.new(:id => "foo").to_param.should == "foo"
+      TestModel.ancestors.should include(ActiveModel::Conversion)
+    end
+  end
 end

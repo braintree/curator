@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     librarian (0.1.0)
+      activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       json
       riak-client (>= 1.0.0)
@@ -9,6 +10,9 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
+    activemodel (3.2.1)
+      activesupport (= 3.2.1)
+      builder (~> 3.0.0)
     activesupport (3.2.1)
       i18n (~> 0.6)
       multi_json (~> 1.0)

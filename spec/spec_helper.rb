@@ -21,6 +21,7 @@ class TestModel
   attr_accessor :id, :some_field
 
   def initialize(hash = {})
+    self.id = hash[:id]
     self.some_field = hash[:some_field]
   end
 end
