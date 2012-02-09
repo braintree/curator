@@ -10,4 +10,5 @@ Gem::Specification.new do |s|
 
   s.add_dependency('activesupport', '>= 3.0.0')
   s.add_dependency('json')
+  s.add_dependency('riak-client', '>= 1.0.0')
 end

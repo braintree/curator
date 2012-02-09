@@ -4,6 +4,7 @@ PATH
     librarian (0.1.0)
       activesupport (>= 3.0.0)
       json
+      riak-client (>= 1.0.0)
 
 GEM
   remote: http://rubygems.org/
@@ -39,6 +40,5 @@ PLATFORMS
 DEPENDENCIES
   librarian!
   rake (= 0.9.2.2)
-  riak-client (= 1.0.0)
   rspec (= 2.8.0)
   timecop (= 0.3.5)
