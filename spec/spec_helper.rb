@@ -4,6 +4,8 @@ require 'timecop'
 require 'riak/cleaner'
 require 'riak/test_data_store'
 
+Librarian.environment = "test"
+
 RSpec.configure do |config|
   config.before(:suite) do
     Riak::Cleaner.remove_all_keys
@@ -11,16 +13,6 @@ RSpec.configure do |config|
 
   config.after(:each) do
     Riak::TestDataStore.reset!
-  end
-end
-
-module Rails
-  def self.env
-    "test"
-  end
-
-  def self.root
-    Pathname.new(File.expand_path(File.dirname(__FILE__) + "/.."))
   end
 end
 

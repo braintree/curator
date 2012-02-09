@@ -5,9 +5,9 @@ module Riak
   class DataStore
     BUCKET_PREFIX = "librarian"
 
-    def self.client(path_to_yml=Rails.root.join("config", "riak.yml"))
+    def self.client
       return @client if @client
-      yml_config = YAML.load(File.read(path_to_yml))[Rails.env]
+      yml_config = YAML.load(File.read(Librarian.riak_config_file))[Librarian.environment]
       @client = Riak::Client.new(yml_config)
     end
 
@@ -63,7 +63,7 @@ module Riak
     end
 
     def self.bucket_prefix
-      "#{BUCKET_PREFIX}:#{Rails.env}"
+      "#{BUCKET_PREFIX}:#{Librarian.environment}"
     end
 
     def self._find_key_by_index(bucket, index_name, query)
