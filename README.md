@@ -43,7 +43,7 @@ NoteRepository.find_by_user_id("my_user")
 
 ### Rails
 
-See [librarian_rails_example](../librarian_rails_example) for an example application using librarian.
+See [librarian_rails_example](librarian_rails_example) for an example application using librarian.
 
 If you use librarian within Rails, all you need is to add librarian to your Gemfile and create a config/riak.yml with contents like:
 
@@ -85,3 +85,9 @@ If you are not using Rails, you can configure librarian manually:
 Librarian.environment = "development"
 Librarian.riak_config_file = File.dirname(__FILE__) + "/config/riak.yml"
 ```
+
+## Under the hood
+
+Librarian stores objects in riak using the id as the key. The value is a json representation of the instance_values of the object. Your repository can implement serialize/deserialize to get different behavior.
+
+The bucket name in riak is librarian:<environment>:collection. The collection is derived from the name of the Repository class, and it can be overriden. For example, if you implement a NoteRepository, the riak bucket will be librarian:development:notes in development mode, and librarian:production:notes in production mode.
