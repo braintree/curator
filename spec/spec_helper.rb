@@ -20,12 +20,6 @@ end
 class TestModel
   include Librarian::Model
   attr_accessor :id, :some_field
-
-  def initialize(hash = {})
-    self.id = hash[:id]
-    self.some_field = hash[:some_field]
-    self.version = hash[:version]
-  end
 end
 
 def test_repository(&block)

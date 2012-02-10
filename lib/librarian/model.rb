@@ -11,16 +11,22 @@ module Librarian
       attr_writer :version
     end
 
+    def initialize(args = {})
+      args.each do |attribute, value|
+        send("#{attribute}=", value) if respond_to?("#{attribute}=")
+      end
+    end
+
     def persisted?
       id.present?
     end
 
-    def ==(other)
-      self.id == other.id
-    end
-
     def version
       @version || self.class.version
+    end
+
+    def ==(other)
+      self.id == other.id
     end
 
     module ClassMethods

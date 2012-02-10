@@ -12,6 +12,19 @@ describe Librarian::Model do
     end
   end
 
+  describe "initialize" do
+    it "sets instance values provided in the args" do
+      model_class = Class.new do
+        include Librarian::Model
+        attr_accessor :one, :two
+      end
+
+      model = model_class.new(:two => 't', :three => 'th')
+      model.one.should be_nil
+      model.two.should == 't'
+    end
+  end
+
   describe "==" do
     it "is equals if ids match" do
       instance1 = TestModel.new
