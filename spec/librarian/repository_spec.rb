@@ -159,4 +159,60 @@ describe Librarian::Repository do
       end
     end
   end
+
+  describe "deserialization" do
+    context "migrations" do
+      after(:each) do
+        FileUtils.rm_rf Librarian.migrations_path
+      end
+
+      it "runs applicable migrations" do
+        repository = test_repository do
+        end
+
+        write_migration repository.collection_name, "0001_one.rb", <<-END
+         class One < Librarian::Migration
+           def migrate(hash)
+             hash.merge("some_field" => "new value")
+           end
+         end
+        END
+
+        model = TestModel.new(
+          :some_field => "old value"
+        )
+        model.version.should == 0
+
+        repository.save(model)
+
+        found_record = repository.find_by_id(model.id)
+        found_record.some_field.should == "new value"
+        found_record.version.should == 1
+      end
+
+      it "does not run migrations if version is current" do
+        repository = test_repository do
+        end
+
+        write_migration repository.collection_name, "0001_one.rb", <<-END
+         class One < Librarian::Migration
+           def migrate(hash)
+             hash.merge("some_field" => "new value")
+           end
+         end
+        END
+
+        model = TestModel.new(
+          :some_field => "old value"
+        )
+        model.version = 1
+
+        repository.save(model)
+
+        found_record = repository.find_by_id(model.id)
+        found_record.some_field.should == "old value"
+        found_record.version.should == 1
+      end
+    end
+  end
 end

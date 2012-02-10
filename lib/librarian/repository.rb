@@ -1,5 +1,6 @@
 require 'active_support/inflector'
 require 'active_support/core_ext/object/instance_variables'
+require 'active_support/core_ext/hash/indifferent_access'
 require 'json'
 
 module Librarian
@@ -53,6 +54,10 @@ module Librarian
         name.to_s.gsub("Repository", "").constantize
       end
 
+      def migrator
+        @migrator ||= Librarian::Migrator.new(collection_name)
+      end
+
       def save(object)
         hash = {
           :collection_name => collection_name,
@@ -91,24 +96,14 @@ module Librarian
         end
       end
 
-      def _decrypted_attributes(attributes)
-        return attributes unless _encrypted_entity?
-
-        ciphertext = attributes[:encrypted_data]
-        key = EncryptionKeyRepository.find_by_id(attributes[:encryption_key_id])
-        plaintext = key.decrypt(Base64.decode64(ciphertext))
-        attributes = JSON.load(plaintext).symbolize_keys
-        attributes.merge(:encryption_key => key)
-      end
-
       def deserialize(attributes)
         klass.new(attributes)
       end
 
       def _deserialize(id, data)
-        symbolized_data = data.symbolize_keys
-        attributes = _decrypted_attributes(symbolized_data)
-        object = deserialize(attributes)
+        attributes = data.with_indifferent_access
+        migrated_attributes = migrator.migrate(attributes)
+        object = deserialize(migrated_attributes)
         object.id = id
         object.created_at = Time.parse(attributes[:created_at]) if attributes[:created_at].present?
         object.updated_at = Time.parse(attributes[:updated_at]) if attributes[:updated_at].present?
