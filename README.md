@@ -1,4 +1,4 @@
-# librarian [![Build Status](https://secure.travis-ci.org/pgr0ss/librarian.png)](http://travis-ci.org/pgr0ss/librarian)
+# Librarian [![Build Status](https://secure.travis-ci.org/pgr0ss/librarian.png)](http://travis-ci.org/pgr0ss/librarian)
 
 Librarian is a model and repository framework for Ruby. It's an alternative to ActiveRecord-like libraries where models are tightly coupled to persistence. Librarian allows you to write domain object that are persistence free, and then write repositories that persist these objects. These ideas are largely taken from the [Repository](http://domaindrivendesign.org/node/123) section of [Domain Driven Design](http://www.amazon.com/Domain-Driven-Design-Tackling-Complexity-Software/dp/0321125215).
 
@@ -90,4 +90,4 @@ Librarian.riak_config_file = File.dirname(__FILE__) + "/config/riak.yml"
 
 Librarian stores objects in riak using the id as the key. The value is a json representation of the instance_values of the object. Your repository can implement serialize/deserialize to get different behavior.
 
-The bucket name in riak is librarian:<environment>:collection. The collection is derived from the name of the Repository class, and it can be overriden. For example, if you implement a NoteRepository, the riak bucket will be librarian:development:notes in development mode, and librarian:production:notes in production mode.
+The bucket name in riak is `librarian:<environment>:collection`. The collection is derived from the name of the Repository class, and it can be overriden. For example, if you implement a NoteRepository, the riak bucket will be `librarian:development:notes` in development mode, and `librarian:production:notes` in production mode.
