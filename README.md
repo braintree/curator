@@ -41,6 +41,8 @@ NoteRepository.find_by_id(note.id)
 NoteRepository.find_by_user_id("my_user")
 ```
 
+Fields included in indexed_fields automatically get a secondary index when persisted to Riak.
+
 ### Rails
 
 See [curator_rails_example](curator_rails_example) for an example application using curator.
