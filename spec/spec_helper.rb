@@ -1,11 +1,11 @@
 require 'i18n'
-require 'librarian'
+require 'curator'
 require 'timecop'
 require 'riak/cleaner'
 require 'riak/test_data_store'
 
-Librarian.environment = "test"
-Librarian.migrations_path = "/tmp/librarian_migrations"
+Curator.environment = "test"
+Curator.migrations_path = "/tmp/curator_migrations"
 
 RSpec.configure do |config|
   config.before(:suite) do
@@ -18,13 +18,13 @@ RSpec.configure do |config|
 end
 
 class TestModel
-  include Librarian::Model
+  include Curator::Model
   attr_accessor :id, :some_field
 end
 
 def test_repository(&block)
   Class.new do
-    include Librarian::Repository
+    include Curator::Repository
 
     def self.data_store
       Riak::TestDataStore
@@ -39,7 +39,7 @@ def test_repository(&block)
 end
 
 def write_migration(collection_name, filename, contents)
-  collection_migration_directory = File.join(Librarian.migrations_path, collection_name)
+  collection_migration_directory = File.join(Curator.migrations_path, collection_name)
   FileUtils.mkdir_p(collection_migration_directory)
 
   File.open(File.join(collection_migration_directory, filename), 'w') do |file|

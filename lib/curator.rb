@@ -1,13 +1,13 @@
 require 'rubygems'
 
-require 'librarian/migration'
-require 'librarian/migrator'
-require 'librarian/model'
-require 'librarian/repository'
-require 'librarian/riak/data_store'
-require 'librarian/railtie' if defined?(Rails)
+require 'curator/migration'
+require 'curator/migrator'
+require 'curator/model'
+require 'curator/repository'
+require 'curator/riak/data_store'
+require 'curator/railtie' if defined?(Rails)
 
-module Librarian
+module Curator
   class << self
     attr_accessor :environment, :migrations_path, :riak_config_file
   end

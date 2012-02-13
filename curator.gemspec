@@ -1,5 +1,5 @@
 Gem::Specification.new do |s|
-  s.name        = 'librarian'
+  s.name        = 'curator'
   s.version     = '0.1.0'
   s.summary     = "Model and repository framework"
   s.description = "Model and repository framework"

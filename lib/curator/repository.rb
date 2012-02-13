@@ -3,7 +3,7 @@ require 'active_support/core_ext/object/instance_variables'
 require 'active_support/core_ext/hash/indifferent_access'
 require 'json'
 
-module Librarian
+module Curator
   module Repository
     extend ActiveSupport::Concern
 
@@ -55,7 +55,7 @@ module Librarian
       end
 
       def migrator
-        @migrator ||= Librarian::Migrator.new(collection_name)
+        @migrator ||= Curator::Migrator.new(collection_name)
       end
 
       def save(object)

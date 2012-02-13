@@ -1,7 +1,7 @@
 require 'active_support'
 require 'active_model'
 
-module Librarian
+module Curator
   module Model
     extend ActiveSupport::Concern
     include ActiveModel::Conversion

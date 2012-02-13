@@ -1,4 +1,4 @@
-module Librarian
+module Curator
   class Migrator
     def initialize(collection_name)
       @collection_name = collection_name
@@ -16,7 +16,7 @@ module Librarian
     end
 
     def _all_migrations
-      files = Dir.glob("#{File.join(Librarian.migrations_path, @collection_name)}/*.rb")
+      files = Dir.glob("#{File.join(Curator.migrations_path, @collection_name)}/*.rb")
 
       files.map do |file|
         load file

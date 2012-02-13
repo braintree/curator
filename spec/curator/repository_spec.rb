@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'active_support/core_ext/numeric/time'
 require 'active_support/core_ext/date/calculations'
 
-describe Librarian::Repository do
+describe Curator::Repository do
   describe "indexed_fields" do
     it "adds find methods for the indexed fields" do
       repository = test_repository do
@@ -163,7 +163,7 @@ describe Librarian::Repository do
   describe "deserialization" do
     context "migrations" do
       after(:each) do
-        FileUtils.rm_rf Librarian.migrations_path
+        FileUtils.rm_rf Curator.migrations_path
       end
 
       it "runs applicable migrations" do
@@ -171,7 +171,7 @@ describe Librarian::Repository do
         end
 
         write_migration repository.collection_name, "0001_one.rb", <<-END
-         class One < Librarian::Migration
+         class One < Curator::Migration
            def migrate(hash)
              hash.merge("some_field" => "new value")
            end
@@ -195,7 +195,7 @@ describe Librarian::Repository do
         end
 
         write_migration repository.collection_name, "0001_one.rb", <<-END
-         class One < Librarian::Migration
+         class One < Curator::Migration
            def migrate(hash)
              hash.merge("some_field" => "new value")
            end

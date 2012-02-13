@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Librarian::Model do
+describe Curator::Model do
   describe "self.included" do
     it "adds accessors for created_at and updated_at" do
       instance = TestModel.new
@@ -15,7 +15,7 @@ describe Librarian::Model do
   describe "initialize" do
     it "sets instance values provided in the args" do
       model_class = Class.new do
-        include Librarian::Model
+        include Curator::Model
         attr_accessor :one, :two
       end
 
@@ -53,7 +53,7 @@ describe Librarian::Model do
 
     it "can be set declaratively" do
       model_class = Class.new do
-        include Librarian::Model
+        include Curator::Model
         current_version 12
       end
 

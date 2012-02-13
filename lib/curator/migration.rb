@@ -1,4 +1,4 @@
-module Librarian
+module Curator
   class Migration
     attr_accessor :version
 
