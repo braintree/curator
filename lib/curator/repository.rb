@@ -36,6 +36,10 @@ module Curator
         _find_by_index(collection_name, :updated_at, _format_time_for_index(start_time).._format_time_for_index(end_time))
       end
 
+      def find_by_version(version)
+        _find_by_index(collection_name, :version, version)
+      end
+
       def find_by_id(id)
         if hash = data_store.find_by_key(collection_name, id)
           _deserialize(hash[:key], hash[:data])
@@ -138,7 +142,8 @@ module Curator
         index_values = _indexed_fields.map { |field| [field, object.send(field)] }
         index_values += [
           [:created_at, _format_time_for_index(object.send(:created_at))],
-          [:updated_at, _format_time_for_index(object.send(:updated_at))]
+          [:updated_at, _format_time_for_index(object.send(:updated_at))],
+          [:version, object.version]
         ]
         Hash[index_values]
       end

@@ -45,6 +45,18 @@ describe Curator::Repository do
       repository.find_by_created_at(1.minute.from_now.utc, 5.minutes.from_now.utc).should == []
       repository.find_by_updated_at(1.minute.from_now.utc, 5.minutes.from_now.utc).should == []
     end
+
+    it "indexes version by default" do
+      repository = test_repository do
+      end
+
+      model = TestModel.new(:some_field => "Acme Inc.")
+
+      repository.save(model)
+
+      repository.find_by_version(model.version).should == [model]
+      repository.find_by_version(model.version + 1).should be_empty
+    end
   end
 
   describe "delete" do
