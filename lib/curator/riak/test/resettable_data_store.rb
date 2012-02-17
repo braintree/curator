@@ -28,8 +28,8 @@ module Curator
         def self.reset!
           @bucket_names ||= {}
           deletable_buckets = @bucket_names.each do |bucket_name, keys|
-             bucket = _bucket(bucket_name)
-             keys.each {|key| bucket.delete(key)}
+            bucket = _bucket(bucket_name)
+            keys.each {|key| bucket.delete(key)}
           end
           @bucket_names = {}
         end
