@@ -26,9 +26,7 @@ def test_repository(&block)
   Class.new do
     include Curator::Repository
 
-    def self.data_store
-      Curator::Riak::Test::ResetableDataStore
-    end
+    self.data_store = Curator::Riak::Test::ResetableDataStore
 
     def self.name
       "TestModelRepository"
