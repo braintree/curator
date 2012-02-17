@@ -59,6 +59,11 @@ module Curator
       end
 
       def save(object)
+        _update_timestamps(object)
+        save_without_timestamps(object)
+      end
+
+      def save_without_timestamps(object)
         hash = {
           :collection_name => collection_name,
           :value => _serialize(object),
@@ -129,16 +134,12 @@ module Curator
       end
 
       def _serialize(object)
-        attributes = serialize(object).reject { |key, val| val.nil? }
+        serialize(object).reject { |key, val| val.nil? }
+      end
 
-        timestamp = Time.now.utc
-
-        updated_at = timestamp
-        created_at = object.created_at || timestamp
-
-        object.created_at = created_at
-        object.updated_at = updated_at
-        attributes.merge(:created_at => created_at, :updated_at => updated_at)
+      def _update_timestamps(object)
+        object.updated_at = Time.now.utc
+        object.created_at ||= object.updated_at
       end
     end
   end

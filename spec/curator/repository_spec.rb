@@ -227,4 +227,26 @@ describe Curator::Repository do
       end
     end
   end
+
+  describe "save_without_timestamps" do
+    it "does not update updated_at" do
+      repository = test_repository do
+      end
+
+      created_time = Time.parse("2012-1-1 12:00 CST")
+      model = TestModel.new
+
+      Timecop.freeze(created_time) do
+        repository.save(model)
+      end
+
+      Timecop.freeze(created_time + 1.day) do
+        repository.save_without_timestamps(model)
+
+        found_model = repository.find_by_id(model.id)
+        found_model.created_at.should == created_time
+        found_model.updated_at.should == created_time
+      end
+    end
+  end
 end
