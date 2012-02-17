@@ -5,10 +5,10 @@ module Curator
     module Test
       class Cleaner
         def self.remove_all_keys
-          riak = ::Riak::DataStore.client
+          riak = DataStore.client
 
           silence_warnings do
-            buckets = riak.buckets.select { |bucket| bucket.name.start_with?(::Riak::DataStore.bucket_prefix) }
+            buckets = riak.buckets.select { |bucket| bucket.name.start_with?(DataStore.bucket_prefix) }
             buckets.each do |bucket|
               bucket.keys do |keys|
                 keys.each { |key| bucket.delete(key) }

@@ -1,7 +1,7 @@
 module Curator
   module Riak
     module Test
-      class ResetableDataStore < ::Riak::DataStore
+      class ResetableDataStore < DataStore
         def self.bucket_prefix
           job = "#{ENV['JOB_NAME'].gsub(/[^[:alnum:]]/, '_')}" if ENV['JOB_NAME'].present?
           [Curator.bucket_prefix, job, Curator.environment].compact.join(':')
