@@ -24,10 +24,6 @@ module Curator
         data_store.delete(collection_name, object.id)
       end
 
-      def encrypted_entity
-        @encrypted_entity = true
-      end
-
       def find_by_created_at(start_time, end_time)
         _find_by_index(collection_name, :created_at, _format_time_for_index(start_time).._format_time_for_index(end_time))
       end
@@ -114,22 +110,6 @@ module Curator
         object
       end
 
-      def _encrypted_attributes(object, attributes)
-        return attributes unless _encrypted_entity?
-
-        encryption_key = EncryptionKeyRepository.find_active
-        plaintext = attributes.to_json
-        ciphertext = encryption_key.encrypt(plaintext)
-        {
-          :encryption_key_id => encryption_key.id,
-          :encrypted_data => Base64.encode64(ciphertext)
-        }
-      end
-
-      def _encrypted_entity?
-        @encrypted_entity == true
-      end
-
       def _format_time_for_index(time)
         time.to_json.gsub('"', '')
       end
@@ -158,10 +138,7 @@ module Curator
 
         object.created_at = created_at
         object.updated_at = updated_at
-        attributes[:created_at] = created_at
-        attributes[:updated_at] = updated_at
-
-        _encrypted_attributes(object, attributes)
+        attributes.merge(:created_at => created_at, :updated_at => updated_at)
       end
     end
   end
