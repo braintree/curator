@@ -81,7 +81,7 @@ describe Riak::DataStore do
 
   context "bucket name dependent on environment" do
     it "defaults bucket name" do
-      Riak::DataStore::_bucket_name("my_bucket").should == "#{Riak::DataStore::BUCKET_PREFIX}:test:my_bucket"
+      Riak::DataStore::_bucket_name("my_bucket").should == "#{Curator.bucket_prefix}:test:my_bucket"
     end
   end
 end

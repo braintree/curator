@@ -2,7 +2,7 @@ module Riak
   class TestDataStore < DataStore
     def self.bucket_prefix
       job = "#{ENV['JOB_NAME'].gsub(/[^[:alnum:]]/, '_')}" if ENV['JOB_NAME'].present?
-      [Riak::DataStore::BUCKET_PREFIX, job, Curator.environment].compact.join(':')
+      [Curator.bucket_prefix, job, Curator.environment].compact.join(':')
     end
 
     def self.exclude_from_reset

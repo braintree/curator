@@ -92,4 +92,4 @@ Curator.riak_config_file = File.dirname(__FILE__) + "/config/riak.yml"
 
 Curator. The value is a json representation of the instance_values of the object. Your repository can implement serialize/deserialize to get different behavior.
 
-The bucket name in riak is `curator:<environment>:collection`. The collection is derived from the name of the Repository class, and it can be overriden. For example, if you implement a NoteRepository, the riak bucket will be `curator:development:notes` in development mode, and `curator:production:notes` in production mode.
+The bucket name in riak is `<bucket_prefix>:<environment>:<collection>`. The bucket prefix is configurable. By default, it will either be `curator` or the name of the Rails application if you are using curator within Rails. The collection is derived from the name of the Repository class, and it can be overriden. For example, if you implement a NoteRepository, the riak bucket will be `curator:development:notes` in development mode, and `curator:production:notes` in production mode.

@@ -3,8 +3,6 @@ require 'yaml'
 
 module Riak
   class DataStore
-    BUCKET_PREFIX = "curator"
-
     def self.client
       return @client if @client
       yml_config = YAML.load(File.read(Curator.riak_config_file))[Curator.environment]
@@ -63,7 +61,7 @@ module Riak
     end
 
     def self.bucket_prefix
-      "#{BUCKET_PREFIX}:#{Curator.environment}"
+      "#{Curator.bucket_prefix}:#{Curator.environment}"
     end
 
     def self._find_key_by_index(bucket, index_name, query)
