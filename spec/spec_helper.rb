@@ -2,7 +2,7 @@ require 'i18n'
 require 'curator'
 require 'timecop'
 require 'curator/riak/test/cleaner'
-require 'curator/riak/test/resetable_data_store'
+require 'curator/riak/test/resettable_data_store'
 
 Curator.environment = "test"
 Curator.migrations_path = "/tmp/curator_migrations"
@@ -13,7 +13,7 @@ RSpec.configure do |config|
   end
 
   config.after(:each) do
-    Curator::Riak::Test::ResetableDataStore.reset!
+    Curator::Riak::Test::ResettableDataStore.reset!
   end
 end
 
@@ -26,7 +26,7 @@ def test_repository(&block)
   Class.new do
     include Curator::Repository
 
-    self.data_store = Curator::Riak::Test::ResetableDataStore
+    self.data_store = Curator::Riak::Test::ResettableDataStore
 
     def self.name
       "TestModelRepository"

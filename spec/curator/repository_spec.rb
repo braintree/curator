@@ -83,7 +83,7 @@ describe Curator::Repository do
 
       repository.save(model)
 
-      riak_data = Curator::Riak::Test::ResetableDataStore.find_by_key("test_models", model.id)[:data]
+      riak_data = Curator::Riak::Test::ResettableDataStore.find_by_key("test_models", model.id)[:data]
       riak_data.has_key?("some_field").should be_false
     end
 
