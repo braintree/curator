@@ -5,21 +5,21 @@ describe Curator do
     it 'creates a configuration if one does not exist' do
       old_config = Curator.config
       Curator.instance_variable_set(:@config, nil)
-      Curator.configure
+      Curator.configure(:riak)
       Curator.config.should be_kind_of(Curator::Configuration)
       Curator.instance_variable_set(:@config, old_config)
     end
 
     it 'leaves existing configuration in place' do
-      Curator.configure
+      Curator.configure(:riak)
       old_config = Curator.config
-      Curator.configure
+      Curator.configure(:riak)
       Curator.config.should equal(old_config)
     end
 
     it 'takes a block and passes the configuration' do
       block_config = nil
-      Curator.configure do |config|
+      Curator.configure(:riak) do |config|
         block_config = config
       end
 

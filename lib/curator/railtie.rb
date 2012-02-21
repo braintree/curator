@@ -1,7 +1,7 @@
 module Curator
   class Railtie < Rails::Railtie
     initializer "railtie.configure_rails_initialization" do |app|
-      Curator.configure do |config|
+      Curator.configure(:riak) do |config|
         config.bucket_prefix = app.class.name.split("::").first.underscore
         config.environment = Rails.env
         config.migrations_path = Rails.root.join('db', 'migrate')

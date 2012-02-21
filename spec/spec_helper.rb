@@ -4,7 +4,7 @@ require 'timecop'
 require 'curator/riak/test/cleaner'
 require 'curator/riak/test/resettable_data_store'
 
-Curator.configure do |config|
+Curator.configure(:riak) do |config|
   config.environment = "test"
   config.migrations_path = "/tmp/curator_migrations"
 end

@@ -13,15 +13,17 @@ module Curator
     attr_reader :config
   end
 
-  def self.configure(&block)
-    @config ||= Curator::Configuration.new
+  def self.configure(data_store, &block)
+    path = "curator/#{data_store.to_s}/configuration"
+    require path
+    @config ||= path.camelize.constantize.new
     yield(@config) if block_given?
   end
 
-  self.configure do |config|
-    config.bucket_prefix = 'curator'
+  self.configure(:riak) do |config|
     config.environment = 'development'
     config.migrations_path = File.expand_path(File.dirname(__FILE__) + "/../db/migrate")
+    config.bucket_prefix = 'curator'
     config.riak_config_file = File.expand_path(File.dirname(__FILE__) + "/../config/riak.yml")
   end
 end
