@@ -83,7 +83,7 @@ module Curator
 
       context "bucket name dependent on environment" do
         it "defaults bucket name" do
-          DataStore::_bucket_name("my_bucket").should == "#{Curator.bucket_prefix}:test:my_bucket"
+          DataStore::_bucket_name("my_bucket").should == "#{Curator.config.bucket_prefix}:test:my_bucket"
         end
       end
     end

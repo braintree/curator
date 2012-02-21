@@ -175,7 +175,7 @@ describe Curator::Repository do
   describe "deserialization" do
     context "migrations" do
       after(:each) do
-        FileUtils.rm_rf Curator.migrations_path
+        FileUtils.rm_rf Curator.config.migrations_path
       end
 
       it "runs applicable migrations" do

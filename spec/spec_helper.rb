@@ -4,8 +4,10 @@ require 'timecop'
 require 'curator/riak/test/cleaner'
 require 'curator/riak/test/resettable_data_store'
 
-Curator.environment = "test"
-Curator.migrations_path = "/tmp/curator_migrations"
+Curator.configure do |config|
+  config.environment = "test"
+  config.migrations_path = "/tmp/curator_migrations"
+end
 
 RSpec.configure do |config|
   config.before(:suite) do
@@ -37,7 +39,7 @@ def test_repository(&block)
 end
 
 def write_migration(collection_name, filename, contents)
-  collection_migration_directory = File.join(Curator.migrations_path, collection_name)
+  collection_migration_directory = File.join(Curator.config.migrations_path, collection_name)
   FileUtils.mkdir_p(collection_migration_directory)
 
   File.open(File.join(collection_migration_directory, filename), 'w') do |file|

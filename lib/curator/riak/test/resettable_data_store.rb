@@ -4,7 +4,7 @@ module Curator
       class ResettableDataStore < DataStore
         def self.bucket_prefix
           job = "#{ENV['JOB_NAME'].gsub(/[^[:alnum:]]/, '_')}" if ENV['JOB_NAME'].present?
-          [Curator.bucket_prefix, job, Curator.environment].compact.join(':')
+          [Curator.config.bucket_prefix, job, Curator.config.environment].compact.join(':')
         end
 
         def self.exclude_from_reset
