@@ -84,8 +84,10 @@ You can also use Rails form builder with curator models:
 If you are not using Rails, you can configure curator manually:
 
 ```ruby
-Curator.environment = "development"
-Curator.riak_config_file = File.dirname(__FILE__) + "/config/riak.yml"
+Curator.configure do |config|
+  config.environment = "development"
+  config.riak_config_file = File.dirname(__FILE__) + "/config/riak.yml"
+end
 ```
 
 ## Under the hood
