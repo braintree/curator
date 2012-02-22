@@ -2,24 +2,28 @@ require 'spec_helper'
 
 describe Curator do
   describe 'self.configure' do
+    around(:each) do |example|
+      old_config = Curator.config
+      example.run
+      Curator.instance_variable_set('@config', old_config)
+    end
+
     it 'creates a configuration if one does not exist' do
       old_config = Curator.config
       Curator.instance_variable_set(:@config, nil)
-      Curator.configure(:riak)
+      Curator.configure(:resettable_riak)
       Curator.config.should be_kind_of(Curator::Configuration)
-      Curator.instance_variable_set(:@config, old_config)
     end
 
-    it 'leaves existing configuration in place' do
-      Curator.configure(:riak)
-      old_config = Curator.config
-      Curator.configure(:riak)
-      Curator.config.should equal(old_config)
+    it 'overwrites existing configuration in place' do
+      Curator.configure(:resettable_riak) { |config| config.environment = "orig" }
+      Curator.configure(:resettable_riak) { |config| config.environment = "new" }
+      Curator.config.environment.should == "new"
     end
 
     it 'takes a block and passes the configuration' do
       block_config = nil
-      Curator.configure(:riak) do |config|
+      Curator.configure(:resettable_riak) do |config|
         block_config = config
       end
 

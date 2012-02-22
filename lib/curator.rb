@@ -5,7 +5,10 @@ require 'curator/migrator'
 require 'curator/model'
 require 'curator/repository'
 require 'curator/configuration'
+require 'curator/riak/configuration'
 require 'curator/riak/data_store'
+require 'curator/resettable_riak/configuration'
+require 'curator/resettable_riak/data_store'
 require 'curator/railtie' if defined?(Rails)
 
 module Curator
@@ -15,9 +18,12 @@ module Curator
 
   def self.configure(data_store, &block)
     path = "curator/#{data_store.to_s}/configuration"
-    require path
-    @config ||= path.camelize.constantize.new
+    @config = path.camelize.constantize.new
     yield(@config) if block_given?
+  end
+
+  def self.data_store
+    config.data_store
   end
 
   self.configure(:riak) do |config|

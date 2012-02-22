@@ -1,21 +1,21 @@
 require 'i18n'
 require 'curator'
 require 'timecop'
-require 'curator/riak/test/cleaner'
-require 'curator/riak/test/resettable_data_store'
 
-Curator.configure(:riak) do |config|
+Curator.configure(:resettable_riak) do |config|
   config.environment = "test"
   config.migrations_path = "/tmp/curator_migrations"
+  config.bucket_prefix = 'curator'
+  config.riak_config_file = File.expand_path(File.dirname(__FILE__) + "/../config/riak.yml")
 end
 
 RSpec.configure do |config|
   config.before(:suite) do
-    Curator::Riak::Test::Cleaner.remove_all_keys
+    Curator.data_store.remove_all_keys
   end
 
   config.after(:each) do
-    Curator::Riak::Test::ResettableDataStore.reset!
+    Curator.data_store.reset!
   end
 end
 
@@ -27,8 +27,6 @@ end
 def test_repository(&block)
   Class.new do
     include Curator::Repository
-
-    self.data_store = Curator::Riak::Test::ResettableDataStore
 
     def self.name
       "TestModelRepository"

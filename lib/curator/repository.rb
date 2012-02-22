@@ -13,7 +13,7 @@ module Curator
       end
 
       def data_store
-        @data_store ||= Riak::DataStore
+        @data_store ||= Curator.data_store
       end
 
       def data_store=(store)
