@@ -3,7 +3,7 @@ require "spec_helper"
 describe Curator::Migrator do
   describe "migrate" do
     after(:each) do
-      FileUtils.rm_rf Curator.migrations_path
+      FileUtils.rm_rf Curator.config.migrations_path
     end
 
     it "migrates a given object through one migration" do

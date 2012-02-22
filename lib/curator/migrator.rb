@@ -16,7 +16,7 @@ module Curator
     end
 
     def _all_migrations
-      files = Dir.glob("#{File.join(Curator.migrations_path, @collection_name)}/*.rb")
+      files = Dir.glob("#{File.join(Curator.config.migrations_path, @collection_name)}/*.rb")
 
       files.map do |file|
         load file

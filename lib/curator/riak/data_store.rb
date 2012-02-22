@@ -6,7 +6,7 @@ module Curator
     class DataStore
       def self.client
         return @client if @client
-        yml_config = YAML.load(File.read(Curator.riak_config_file))[Curator.environment]
+        yml_config = YAML.load(File.read(Curator.config.riak_config_file))[Curator.config.environment]
         @client = ::Riak::Client.new(yml_config)
       end
 
@@ -62,7 +62,7 @@ module Curator
       end
 
       def self.bucket_prefix
-        "#{Curator.bucket_prefix}:#{Curator.environment}"
+        "#{Curator.config.bucket_prefix}:#{Curator.config.environment}"
       end
 
       def self._find_key_by_index(bucket, index_name, query)
