@@ -4,7 +4,7 @@ See [Untangle Domain and Persistence Logic with Curator](http://www.braintreepay
 
 Curator is a model and repository framework for Ruby. It's an alternative to ActiveRecord-like libraries where models are tightly coupled to persistence. Curator allows you to write domain object that are persistence free, and then write repositories that persist these objects. These ideas are largely taken from the [Repository](http://domaindrivendesign.org/node/123) section of [Domain Driven Design](http://www.amazon.com/Domain-Driven-Design-Tackling-Complexity-Software/dp/0321125215).
 
-Currently, curator supports Riak for persistence. If you are interested in enhancing curator to support other data stores, please let me know.
+Currently, curator supports [Riak](http://basho.com/products/riak-overview/) for persistence. If you are interested in enhancing curator to support other data stores, please let me know.
 
 ## Usage
 
@@ -93,8 +93,37 @@ Curator.configure(:riak) do |config|
 end
 ```
 
+## Testing
+
+If you are writing tests using curator, it's likely that you will want a way to clean up your data in Riak between tests. Riak does not provide an easy way to clear out all data, so curator takes care of it for you. You can use the following methods if you change your backend from `:riak` to `:resettable_riak`:
+
+- `remove_all_keys` - remove everything in Riak under the current bucket_prefix and environment
+- `reset!` - remove all keys since the last reset!
+
+For example, our `spec_helper.rb` file looks like this for our [rspec](https://www.relishapp.com/rspec) test suite:
+
+```ruby
+Curator.configure(:resettable_riak) do |config|
+  config.environment = "test"
+  config.bucket_prefix = 'curator'
+  config.riak_config_file = File.expand_path(File.dirname(__FILE__) + "/../config/riak.yml")
+end
+
+RSpec.configure do |config|
+  config.before(:suite) do
+    Curator.data_store.remove_all_keys
+  end
+
+  config.after(:each) do
+    Curator.data_store.reset!
+  end
+end
+```
+
+This ensures that our tests start with an empty Riak, and the data gets removed in between tests.
+
 ## Under the hood
 
 Curator. The value is a json representation of the instance_values of the object. Your repository can implement serialize/deserialize to get different behavior.
 
-The bucket name in riak is `<bucket_prefix>:<environment>:<collection>`. The bucket prefix is configurable. By default, it will either be `curator` or the name of the Rails application if you are using curator within Rails. The collection is derived from the name of the Repository class, and it can be overriden. For example, if you implement a NoteRepository, the riak bucket will be `curator:development:notes` in development mode, and `curator:production:notes` in production mode.
+The bucket name in Riak is `<bucket_prefix>:<environment>:<collection>`. The bucket prefix is configurable. By default, it will either be `curator` or the name of the Rails application if you are using curator within Rails. The collection is derived from the name of the Repository class, and it can be overriden. For example, if you implement a NoteRepository, the riak bucket will be `curator:development:notes` in development mode, and `curator:production:notes` in production mode.
