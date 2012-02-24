@@ -16,7 +16,7 @@ describe Curator::Model do
     it "sets instance values provided in the args" do
       model_class = Class.new do
         include Curator::Model
-        attr_accessor :one, :two
+        attr_reader :one, :two
       end
 
       model = model_class.new(:two => 't', :three => 'th')

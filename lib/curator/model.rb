@@ -13,7 +13,11 @@ module Curator
 
     def initialize(args = {})
       args.each do |attribute, value|
-        send("#{attribute}=", value) if respond_to?("#{attribute}=")
+        if respond_to?("#{attribute}=")
+          send("#{attribute}=", value)
+        else
+          instance_variable_set("@#{attribute}", value)
+        end
       end
     end
 
