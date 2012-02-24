@@ -110,6 +110,29 @@ describe Curator::Migrator do
 
         migrator.migrate({"version" => 0}).should == {"one" => "one", "version" => 1}
       end
+
+      it "caches migrations for each version" do
+        write_migration "test_models", "0001_one.rb", <<-END
+          class One < Curator::Migration
+            def migrate(hash)
+              hash.merge("one" => "one")
+            end
+          end
+        END
+
+        write_migration "test_models", "0002_two.rb", <<-END
+          class Two < Curator::Migration
+            def migrate(hash)
+              hash.merge("two" => "two")
+            end
+          end
+        END
+
+        migrator = Curator::Migrator.new("test_models")
+
+        migrator.migrate({"version" => 1}).should == {"two" => "two", "version" => 2}
+        migrator.migrate({"version" => 0}).should == {"one" => "one", "two" => "two", "version" => 2}
+      end
     end
   end
 end

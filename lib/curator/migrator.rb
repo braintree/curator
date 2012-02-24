@@ -2,6 +2,7 @@ module Curator
   class Migrator
     def initialize(collection_name)
       @collection_name = collection_name
+      @applicable_migrations = {}
     end
 
     def migrate(attributes)
@@ -12,7 +13,7 @@ module Curator
     end
 
     def _applicable_migrations(current_version)
-      @applicable_migrations ||= _all_migrations.select { |migration| migration.version > current_version }.sort_by(&:version)
+      @applicable_migrations[current_version] ||= _all_migrations.select { |migration| migration.version > current_version }.sort_by(&:version)
     end
 
     def _all_migrations
