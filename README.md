@@ -33,14 +33,15 @@ class NoteRepository
 end
 ```
 
-Repositories have `save`, `find_by_id`, and `find_by` methods for indexed fields:
+Repositories have `save`, `find_by_id`, and `find_by` and `find_first_by` methods for indexed fields. `find_by` methods return an array of all matching records, while `find_first_by` only returns the first match (with no ordering):
 
 ```ruby
 note = Note.new(:user_id => "my_user")
 NoteRepository.save(note)
 
-NoteRepository.find_by_id(note.id)
-NoteRepository.find_by_user_id("my_user")
+note1 = NoteRepository.find_by_id(note.id)
+note2 = NoteRepository.find_first_by_user_id("my_user")
+my_notes = NoteRepository.find_by_user_id("my_user")
 ```
 
 Fields included in indexed_fields automatically get a secondary index when persisted to Riak.
