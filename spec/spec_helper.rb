@@ -2,11 +2,9 @@ require 'i18n'
 require 'curator'
 require 'timecop'
 
-Curator.configure(:resettable_riak) do |config|
-  config.environment = "test"
-  config.migrations_path = "/tmp/curator_migrations"
-  config.bucket_prefix = 'curator'
-  config.riak_config_file = File.expand_path(File.dirname(__FILE__) + "/../config/riak.yml")
+Curator.configure(:memory) do |config|
+  config.environment = 'test'
+  config.migrations_path = '/tmp/curator_migrations'
 end
 
 RSpec.configure do |config|

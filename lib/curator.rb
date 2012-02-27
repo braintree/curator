@@ -9,6 +9,8 @@ require 'curator/riak/configuration'
 require 'curator/riak/data_store'
 require 'curator/resettable_riak/configuration'
 require 'curator/resettable_riak/data_store'
+require 'curator/memory/configuration'
+require 'curator/memory/data_store'
 require 'curator/railtie' if defined?(Rails)
 
 module Curator
