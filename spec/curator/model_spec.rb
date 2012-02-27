@@ -12,6 +12,16 @@ describe Curator::Model do
       model.one.should be_nil
       model.two.should == 't'
     end
+
+    it "does not set arbitrary fields" do
+      model_class = Class.new do
+        include Curator::Model
+        attr_reader :foo
+      end
+
+      model = model_class.new(:foo => "bar", :baz => "qux")
+      model.instance_variable_get("@baz").should be_nil
+    end
   end
 
   describe "==" do
