@@ -59,7 +59,7 @@ module Curator
       end
 
       def save(object)
-        _update_timestamps(object)
+        object.touch
         save_without_timestamps(object)
       end
 
@@ -74,7 +74,7 @@ module Curator
           hash[:key] = object.id
           data_store.save(hash)
         else
-          object.id = data_store.save(hash).key
+          object.instance_variable_set("@id", data_store.save(hash).key)
         end
       end
 
@@ -109,11 +109,10 @@ module Curator
       def _deserialize(id, data)
         attributes = data.with_indifferent_access
         migrated_attributes = migrator.migrate(attributes)
-        object = deserialize(migrated_attributes)
-        object.id = id
-        object.created_at = Time.parse(attributes[:created_at].to_s) if attributes[:created_at].present?
-        object.updated_at = Time.parse(attributes[:updated_at].to_s) if attributes[:updated_at].present?
-        object
+        migrated_attributes[:id] = id
+        migrated_attributes[:created_at] = Time.parse(migrated_attributes[:created_at]) if migrated_attributes[:created_at]
+        migrated_attributes[:updated_at] = Time.parse(migrated_attributes[:updated_at]) if migrated_attributes[:updated_at]
+        deserialize(migrated_attributes)
       end
 
       def _format_time_for_index(time)

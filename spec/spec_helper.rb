@@ -19,7 +19,7 @@ end
 
 class TestModel
   include Curator::Model
-  attr_accessor :id, :some_field
+  attr_reader :id, :some_field
 end
 
 def test_repository(&block)

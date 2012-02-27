@@ -1,17 +1,6 @@
 require "spec_helper"
 
 describe Curator::Model do
-  describe "self.included" do
-    it "adds accessors for created_at and updated_at" do
-      instance = TestModel.new
-      instance.created_at = :created_at
-      instance.updated_at = :updated_at
-
-      instance.created_at.should == :created_at
-      instance.updated_at.should == :updated_at
-    end
-  end
-
   describe "initialize" do
     it "sets instance values provided in the args" do
       model_class = Class.new do
@@ -27,21 +16,51 @@ describe Curator::Model do
 
   describe "==" do
     it "is equals if ids match" do
-      instance1 = TestModel.new
-      instance1.id = "id"
-      instance2 = TestModel.new
-      instance2.id = "id"
+      instance1 = TestModel.new(:id => "id")
+      instance2 = TestModel.new(:id => "id")
 
       instance1.should == instance2
     end
 
     it "is not equals if ids don't match" do
-      instance1 = TestModel.new
-      instance1.id = "id"
-      instance2 = TestModel.new
-      instance2.id = "id2"
+      instance1 = TestModel.new(:id => "id")
+      instance2 = TestModel.new(:id => "id2")
 
       instance1.should_not == instance2
+    end
+  end
+
+  describe "touch" do
+    it "updates the models timestamps to now" do
+      model = TestModel.new
+      model.created_at.should be_nil
+      model.updated_at.should be_nil
+      model.touch
+      model.created_at.should_not be_nil
+      model.updated_at.should_not be_nil
+    end
+
+    it "does not change created_at after it has been created" do
+      model = TestModel.new
+      model.touch
+      created_at = model.created_at
+      model.touch
+      model.created_at.should == created_at
+    end
+
+    it "changes updated_at each time" do
+      model = TestModel.new
+      model.touch
+      updated_at = model.updated_at
+      model.touch
+      model.updated_at.should_not == updated_at
+    end
+
+    it "saves times in utc" do
+      model = TestModel.new
+      model.touch
+      model.updated_at.zone.should == "UTC"
+      model.created_at.zone.should == "UTC"
     end
   end
 

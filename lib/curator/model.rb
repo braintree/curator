@@ -7,7 +7,7 @@ module Curator
     include ActiveModel::Conversion
 
     included do
-      attr_accessor :created_at, :updated_at
+      attr_reader :created_at, :updated_at
       attr_writer :version
     end
 
@@ -23,6 +23,12 @@ module Curator
 
     def persisted?
       id.present?
+    end
+
+    def touch
+      now = Time.now.utc
+      @created_at = now if @created_at.nil?
+      @updated_at = now
     end
 
     def version
