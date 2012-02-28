@@ -106,6 +106,23 @@ describe Curator::Repository do
       end
     end
 
+    it "persists the model's current version on the initial save" do
+      repository = test_repository do
+      end
+
+      class VersionedModel
+        include Curator::Model
+        current_version 42
+        attr_accessor :id
+      end
+
+      model = VersionedModel.new
+      repository.save(model)
+
+      riak_data = Curator.data_store.find_by_key("test_models", model.id)[:data]
+      riak_data["version"].should == 42
+    end
+
     it "persists created_at on multiple saves" do
       repository = test_repository do
       end
@@ -183,11 +200,11 @@ describe Curator::Repository do
         end
 
         write_migration repository.collection_name, "0001_one.rb", <<-END
-         class One < Curator::Migration
-           def migrate(hash)
-             hash.merge("some_field" => "new value")
-           end
-         end
+          class One < Curator::Migration
+            def migrate(hash)
+              hash.merge("some_field" => "new value")
+            end
+          end
         END
 
         model = TestModel.new(
@@ -207,11 +224,11 @@ describe Curator::Repository do
         end
 
         write_migration repository.collection_name, "0001_one.rb", <<-END
-         class One < Curator::Migration
-           def migrate(hash)
-             hash.merge("some_field" => "new value")
-           end
-         end
+          class One < Curator::Migration
+            def migrate(hash)
+              hash.merge("some_field" => "new value")
+            end
+          end
         END
 
         model = TestModel.new(

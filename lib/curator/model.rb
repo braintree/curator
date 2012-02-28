@@ -7,11 +7,11 @@ module Curator
     include ActiveModel::Conversion
 
     included do
-      attr_accessor :created_at, :updated_at
-      attr_writer :version
+      attr_accessor :created_at, :updated_at, :version
     end
 
     def initialize(args = {})
+      @version = self.class.version
       args.each do |attribute, value|
         send("#{attribute}=", value) if respond_to?("#{attribute}=")
       end
@@ -19,10 +19,6 @@ module Curator
 
     def persisted?
       id.present?
-    end
-
-    def version
-      @version || self.class.version
     end
 
     def ==(other)
