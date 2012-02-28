@@ -134,7 +134,7 @@ module Curator
       end
 
       def _serialize(object)
-        serialize(object).reject { |key, val| val.nil? }
+        serialize(object).reject { |key, val| val.nil? }.merge(:version => object.version)
       end
 
       def _update_timestamps(object)
