@@ -65,7 +65,8 @@ describe Curator::Model do
   describe "ActiveModel" do
     it "extends ActiveModel::Naming" do
       TestModel.model_name.should == "TestModel"
-      TestModel.singleton_class.ancestors.should include(ActiveModel::Naming)
+      eigenclass = class << TestModel; self; end
+      eigenclass.ancestors.should include(ActiveModel::Naming)
     end
 
     it "includes ActiveModel::Conversion" do

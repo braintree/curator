@@ -83,7 +83,8 @@ module Curator
       end
 
       def _build_finder_methods(field_name)
-        singleton_class.class_eval do
+        eigenclass = class << self; self; end
+        eigenclass.class_eval do
           define_method("find_by_#{field_name}") do |value|
             _find_by_index(collection_name, field_name, value)
           end
