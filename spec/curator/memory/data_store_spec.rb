@@ -98,15 +98,15 @@ module Curator::Memory
         DataStore.save(:collection_name => 'test_collection', :key => 'key1', :value => {:indexed_key => Time.now.utc}, :index => {:indexed_key => Time.now.utc})
         DataStore.save(:collection_name => 'test_collection', :key => 'key2', :value => {:indexed_key => 3.days.ago}, :index => {:indexed_key => 3.days.ago})
 
-        range = (11.hours.from_now.utc.to_s..15.hours.from_now.utc.to_s)
+        range = (11.hours.from_now.utc..15.hours.from_now.utc)
         keys = DataStore.find_by_index('test_collection', :indexed_key, range).map { |data| data[:key] }
         keys.sort.should == []
 
-        range = (15.minutes.ago.utc.to_s..5.minutes.from_now.utc.to_s)
+        range = (15.minutes.ago.utc..5.minutes.from_now.utc)
         keys = DataStore.find_by_index('test_collection', :indexed_key, range).map { |data| data[:key] }
         keys.sort.should == ['key1']
 
-        range = (10.days.ago.utc.to_s..4.days.from_now.utc.to_s)
+        range = (10.days.ago.utc..4.days.from_now.utc)
         keys = DataStore.find_by_index('test_collection', :indexed_key, range).map { |data| data[:key] }
         keys.sort.should == ['key1', 'key2']
       end

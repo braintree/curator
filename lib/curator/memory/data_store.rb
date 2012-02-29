@@ -54,11 +54,8 @@ module Curator
         index = _index(bucket, index_name)
         keys = case query
                when Range
-                 first = _convert_for_query(query.first)
-                 last = _convert_for_query(query.last)
                  keys = index.keys.select do |key|
-                   key = _convert_for_query(key)
-                   key.between?(first, last)
+                   key.between?(query.first, query.last)
                  end
                  index.values_at(*keys).flatten
                else
@@ -67,12 +64,6 @@ module Curator
         keys.map do |key|
           find_by_key(collection_name, key)
         end
-      end
-
-      def self._convert_for_query(value)
-        Time.parse(value.to_s)
-      rescue ArgumentError
-        value
       end
 
       def self._data
