@@ -111,8 +111,8 @@ module Curator
         migrated_attributes = migrator.migrate(attributes)
         object = deserialize(migrated_attributes)
         object.id = id
-        object.created_at = Time.parse(attributes[:created_at]) if attributes[:created_at].present?
-        object.updated_at = Time.parse(attributes[:updated_at]) if attributes[:updated_at].present?
+        object.created_at = Time.parse(attributes[:created_at].to_s) if attributes[:created_at].present?
+        object.updated_at = Time.parse(attributes[:updated_at].to_s) if attributes[:updated_at].present?
         object
       end
 
