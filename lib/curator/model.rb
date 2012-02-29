@@ -12,9 +12,10 @@ module Curator
     end
 
     def initialize(args = {})
+      method_strings = methods.map(&:to_s)
       args.each do |attribute, value|
-        send("#{attribute}=", value) if respond_to?("#{attribute}=")
-        instance_variable_set("@#{attribute}", value) if respond_to?(attribute.to_s)
+        send("#{attribute}=", value) if method_strings.include?("#{attribute}=")
+        instance_variable_set("@#{attribute}", value) if method_strings.include?(attribute.to_s)
       end
     end
 
