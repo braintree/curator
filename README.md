@@ -88,8 +88,10 @@ If you are not using Rails, you can configure curator manually:
 
 ```ruby
 Curator.configure(:riak) do |config|
+  config.bucket_prefix = "my_app"
   config.environment = "development"
-  config.riak_config_file = File.dirname(__FILE__) + "/config/riak.yml"
+  config.migrations_path = File.expand_path(File.dirname(__FILE__) + "/../db/migrate")
+  config.riak_config_file = File.expand_path(File.dirname(__FILE__) + "/config/riak.yml")
 end
 ```
 
@@ -104,8 +106,9 @@ For example, our `spec_helper.rb` file looks like this for our [rspec](https://w
 
 ```ruby
 Curator.configure(:resettable_riak) do |config|
+  config.bucket_prefix = "curator"
   config.environment = "test"
-  config.bucket_prefix = 'curator'
+  config.migrations_path = File.expand_path(File.dirname(__FILE__) + "/../db/migrate")
   config.riak_config_file = File.expand_path(File.dirname(__FILE__) + "/../config/riak.yml")
 end
 
