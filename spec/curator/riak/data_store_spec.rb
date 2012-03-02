@@ -1,5 +1,12 @@
 require 'spec_helper'
 
+Curator.configure(:resettable_riak) do |config|
+  config.environment = "test"
+  config.migrations_path = "/tmp/curator_migrations"
+  config.bucket_prefix = 'curator'
+  config.riak_config_file = File.expand_path(File.dirname(__FILE__) + "/../../../config/riak.yml")
+end
+
 module Curator
   module Riak
     describe Curator::Riak::DataStore do
@@ -75,6 +82,10 @@ module Curator
       end
 
       describe "find_by_key" do
+        it "returns nil when the key does not exist" do
+          DataStore.find_by_key("heap", "some_key").should be_nil
+        end
+
         it "returns an object by key" do
           DataStore.save(:collection_name => "heap", :key => "some_key", :value => {"k" => "v"})
           DataStore.find_by_key("heap", "some_key").should == {:key => "some_key", :data => {"k" => "v"}}
