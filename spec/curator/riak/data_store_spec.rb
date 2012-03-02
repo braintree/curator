@@ -53,6 +53,22 @@ module Curator
             DataStore._bucket("fake_things").delete("blah")
           end
         end
+
+        it "sets content_type for serialization with an option" do
+          begin
+            DataStore.save(
+              :collection_name => "fake_things",
+              :key => "key",
+              :value => "i am plain text",
+              :content_type => "text/plain"
+            )
+
+            result = DataStore.find_by_key("fake_things", "key")
+            result[:data].should == "i am plain text"
+          ensure
+            DataStore._bucket("fake_things").delete("blah")
+          end
+        end
       end
 
       describe "self.delete" do

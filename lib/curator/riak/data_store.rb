@@ -23,7 +23,7 @@ module Curator
       def self.save(options)
         bucket = _bucket(options[:collection_name])
         object = ::Riak::RObject.new(bucket, options[:key])
-        object.content_type = "application/json"
+        object.content_type = options.fetch(:content_type, "application/json")
         object.data = options[:value]
         options.fetch(:index, {}).each do |index_name, index_value|
           object.indexes["#{index_name}_bin"] << index_value
