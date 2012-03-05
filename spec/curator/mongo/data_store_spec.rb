@@ -109,8 +109,8 @@ module Curator
       end
 
       context "collection name dependent on environment" do
-        it "defaults collection name" do
-          DataStore::_collection_name('my_collection').should == 'my_collection'
+        it "namespaces database with environment" do
+          DataStore::_db_name.should == 'curator:test'
         end
       end
     end
