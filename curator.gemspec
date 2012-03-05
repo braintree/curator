@@ -12,4 +12,5 @@ Gem::Specification.new do |s|
   s.add_dependency('activemodel', '>= 3.0.0')
   s.add_dependency('json')
   s.add_dependency('riak-client', '>= 1.0.0')
+  s.add_dependency('mongo', '~> 1.6')
 end
