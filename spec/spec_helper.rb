@@ -2,9 +2,11 @@ require 'i18n'
 require 'curator'
 require 'timecop'
 
-Curator.configure(:memory) do |config|
-  config.environment = 'test'
-  config.migrations_path = '/tmp/curator_migrations'
+Curator.configure(:resettable_riak) do |config|
+  config.environment = "test"
+  config.migrations_path = "/tmp/curator_migrations"
+  config.bucket_prefix = 'curator'
+  config.riak_config_file = File.expand_path(File.dirname(__FILE__) + "/../config/riak.yml")
 end
 
 RSpec.configure do |config|
@@ -31,6 +33,15 @@ def test_repository(&block)
     end
 
     instance_eval(&block)
+  end
+end
+
+def with_config(&block)
+  around(:each) do |example|
+    old_config = Curator.config
+    block.call
+    example.run
+    Curator.instance_variable_set('@config', old_config)
   end
 end
 

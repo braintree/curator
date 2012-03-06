@@ -2,10 +2,7 @@ require 'spec_helper'
 
 describe Curator do
   describe 'self.configure' do
-    around(:each) do |example|
-      old_config = Curator.config
-      example.run
-      Curator.instance_variable_set('@config', old_config)
+    with_config do
     end
 
     it 'creates a configuration if one does not exist' do

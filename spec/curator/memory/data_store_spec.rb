@@ -2,14 +2,12 @@ require 'spec_helper'
 require 'active_support/core_ext/numeric/time'
 require 'active_support/core_ext/date/calculations'
 
-Curator.configure(:memory) do |config|
-  config.environment = 'test'
-end
-
 module Curator::Memory
   describe Curator::Memory::DataStore do
-    before(:each) do
-      DataStore.reset!
+    with_config do
+      Curator.configure(:memory) do |config|
+        config.environment = 'test'
+      end
     end
 
     describe 'self.remove_all_keys' do
