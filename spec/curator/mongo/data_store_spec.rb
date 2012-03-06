@@ -2,19 +2,17 @@ require 'spec_helper'
 require 'active_support/core_ext/numeric/time'
 require 'active_support/core_ext/date/calculations'
 
-Curator.configure(:mongo) do |config|
-  config.environment = "test"
-  config.database = "curator"
-  config.mongo_config_file = File.expand_path(File.dirname(__FILE__) + "/../../../config/mongo.yml")
-end
-
 module Curator
   module Mongo
     describe Curator::Mongo::DataStore do
-      before(:each) do
-        DataStore.reset!
+      with_config do
+        Curator.configure(:mongo) do |config|
+          config.environment = "test"
+          config.database = "curator"
+          config.mongo_config_file = File.expand_path(File.dirname(__FILE__) + "/../../../config/mongo.yml")
+        end
       end
-      
+
       describe "self.client" do
         it "returns a mongo client with a config read from the yml file provided" do
           begin
