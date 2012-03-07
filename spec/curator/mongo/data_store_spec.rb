@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'active_support/core_ext/numeric/time'
 require 'active_support/core_ext/date/calculations'
+require 'curator/mongo/data_store'
 
 module Curator
   module Mongo
