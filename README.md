@@ -48,7 +48,7 @@ Fields included in indexed_fields automatically get a secondary index when persi
 
 ### Rails
 
-See [curator_rails_example](curator_rails_example) for an example application using curator.
+See [curator_rails_example](/braintree/curator_rails_example) for an example application using curator.
 
 If you use curator within Rails, all you need is to add curator to your Gemfile and create a config/riak.yml with contents like:
 
@@ -124,6 +124,58 @@ end
 ```
 
 This ensures that our tests start with an empty Riak, and the data gets removed in between tests.
+
+## Data Migrations
+
+See [Data migrations for NoSQL with Curator](http://www.braintreepayments.com/devblog/data-migrations-for-nosql-with-curator) for an overview of data migrations. They have also been implemented in the [curator_rails_example](/braintree/curator_rails_example).
+
+Each model instance has an associated version that is persisted along with the object. By default, all instances start at version 0. You can change the default by specifying the `current_version` in the model class:
+
+```ruby
+class Note
+  current_version 1
+end
+
+note = Note.new
+note.version #=> 1
+```
+
+When the repository reads from the data store, it compares the stored version number to all available migrations for that collection. If any migrations are found with a higher version number, the attributes for the instance are run through each migration in turn and then used to instantiate the object. This means that migrations are lazy, and objects will get migrated as they are used, rather than requiring downtime while all migrations run.
+
+In order to write a migration, create a folder with the collection name under the `migrations_path` that was configured in the `Curator.configure` block.
+
+```bash
+mkdir db/migrate/notes/
+```
+Then, create a file with a filename that matches `#{version}_#{class_name}.rb`:
+
+```ruby
+# db/migrate/notes/0001_update_description.rb
+
+class UpdateDescription < Curator::Migration
+  def migrate(attributes)
+    attributes.merge(:description => attributes[:description].to_s + " -- Passed through migration 1")
+  end
+end
+```
+
+Now, all Note objects that are read with a version lower than 1 will have their description ammended. Migrations are free to do what they want with the attributes. They can add, edit or delete attributes in any combination desired. All that matters is that the resulting attributes hash will be used to instantiate the model.
+
+Since migrations merely accept and return a hash, they are easy to unit test. They do not affect the data store directly (like `ActiveRecord` migrations), so there is no harm in calling them in tests:
+
+```ruby
+require 'spec_helper'
+require 'db/migrate/notes/0001_update_description'
+
+describe UpdateDescription do
+  describe "migrate" do
+    it "appends to the description" do
+      attributes = {:description => "blah"}
+      UpdateDescription.new(1).migrate(attributes)[:description].should == "blah -- Passed through migration 1
+    end
+  end
+end
+```
 
 ## Under the hood
 
