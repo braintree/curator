@@ -39,7 +39,7 @@ module Curator
 
       def self.find_by_index(collection_name, field, query)
         return [] if query.nil?
-        
+
         collection = _collection(collection_name)
         documents = collection.find(field.to_sym => query)
         documents.map {|doc| normalize_document(doc) }

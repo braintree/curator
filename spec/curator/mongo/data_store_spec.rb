@@ -49,7 +49,7 @@ module Curator
           id = DataStore.save(:collection_name => 'fake_things', :value => {:foo => 2})
           DataStore.find_by_key('fake_things', id[:key]).should == {:key => id[:key], :data => {'foo' => 2}}
         end
-        
+
         it 'returns an object with a key' do
           object = DataStore.save(:collection_name => 'fake_things', :key => 'abc', :value => {:foo => 1})
           object.should respond_to :key
