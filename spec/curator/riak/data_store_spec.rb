@@ -1,8 +1,11 @@
 require 'spec_helper'
+require 'curator/shared_data_store_specs'
 
 module Curator
   module Riak
     describe Curator::Riak::DataStore do
+      include_examples "data_store", DataStore
+
       describe "self.client" do
         it "returns a riak client with a config read from the yml file provided" do
           begin
@@ -29,24 +32,6 @@ module Curator
           DataStore.client.bucket(DataStore._bucket_name("fake_things")).get("blah").data.should == {"foo" => "bar"}
         end
 
-        it "can index by multiple things" do
-          begin
-            DataStore.save(
-              :collection_name => "fake_things",
-              :key => "blah",
-              :value => {:foo => "foo-data", :bar => "bar-data"},
-              :index => {:foo => "foo-data", :bar => "bar-data"}
-            )
-
-            foo_result = DataStore.find_by_index("fake_things", "foo", "foo-data").first
-            foo_result[:key].should == "blah"
-            bar_result = DataStore.find_by_index("fake_things", "bar", "bar-data").first
-            bar_result[:key].should == "blah"
-          ensure
-            DataStore._bucket("fake_things").delete("blah")
-          end
-        end
-
         it "sets content_type for serialization with an option" do
           begin
             DataStore.save(
@@ -61,43 +46,6 @@ module Curator
           ensure
             DataStore._bucket("fake_things").delete("blah")
           end
-        end
-      end
-
-      describe "self.delete" do
-        it "deletes an object in a buket for a key" do
-          DataStore.save(:collection_name => "heap", :key => "some_key", :value => {"k" => "v"})
-          DataStore.delete("heap", "some_key")
-          DataStore.find_by_key("heap", "some_key").should be_nil
-        end
-      end
-
-      describe "find_by_index" do
-        it "returns an empty array if key is not found" do
-          DataStore.find_by_index("abyss","invalid_index","invalid_key").should be_empty
-        end
-
-        it "returns an empty array if key is nil" do
-          DataStore.find_by_index("abyss","invalid_index", nil).should be_empty
-        end
-
-        it "returns multiple objects" do
-          DataStore.save(:collection_name => "test_collection", :key => "key1", :value => {:indexed_key => "indexed_value"}, :index => {:indexed_key => "indexed_value"})
-          DataStore.save(:collection_name => "test_collection", :key => "key2", :value => {:indexed_key => "indexed_value"}, :index => {:indexed_key => "indexed_value"})
-
-          keys = DataStore.find_by_index("test_collection", :indexed_key, "indexed_value").map { |data| data[:key] }
-          keys.sort.should == ["key1", "key2"]
-        end
-      end
-
-      describe "find_by_key" do
-        it "returns nil when the key does not exist" do
-          DataStore.find_by_key("heap", "some_key").should be_nil
-        end
-
-        it "returns an object by key" do
-          DataStore.save(:collection_name => "heap", :key => "some_key", :value => {"k" => "v"})
-          DataStore.find_by_key("heap", "some_key").should == {:key => "some_key", :data => {"k" => "v"}}
         end
       end
 

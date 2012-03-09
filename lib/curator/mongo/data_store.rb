@@ -28,8 +28,7 @@ module Curator
         options.fetch(:index, {}).each do |index_name, index_value|
           collection.ensure_index index_name
         end
-        object_id = collection.save document
-        Hash[:key => object_id]
+        collection.save document
       end
 
       def self.delete(collection_name, id)

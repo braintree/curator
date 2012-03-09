@@ -28,7 +28,8 @@ module Curator
         options.fetch(:index, {}).each do |index_name, index_value|
           object.indexes["#{index_name}_bin"] << index_value
         end
-        object.store
+        result = object.store
+        result.key
       end
 
       def self.find_by_key(bucket_name, key)

@@ -74,7 +74,7 @@ module Curator
           hash[:key] = object.id
           data_store.save(hash)
         else
-          object.instance_variable_set("@id", data_store.save(hash).key)
+          object.instance_variable_set("@id", data_store.save(hash))
         end
       end
 

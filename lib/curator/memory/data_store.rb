@@ -25,7 +25,7 @@ module Curator
           index[indexed_value] << key unless index[indexed_value].include?(key)
         end
 
-        OpenStruct.new(:key => key)
+        key
       end
 
       def self.delete(collection_name, key)

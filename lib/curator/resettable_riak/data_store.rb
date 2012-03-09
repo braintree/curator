@@ -35,15 +35,15 @@ module Curator
       end
 
       def self.save(options)
-        result = super
+        key = super
 
         unless @exclude_from_reset
           @bucket_names ||= {}
           @bucket_names[options[:collection_name]] ||= []
-          @bucket_names[options[:collection_name]] << result.key
+          @bucket_names[options[:collection_name]] << key
         end
 
-        result
+        key
       end
     end
   end
