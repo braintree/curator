@@ -182,3 +182,41 @@ end
 Curator stores objects in the data store using the id as the key. The value is a json representation of the instance_values of the object. Your repository can implement serialize/deserialize to get different behavior.
 
 The bucket name in Riak is `<bucket_prefix>:<environment>:<collection>`. The bucket prefix is configurable. By default, it will either be `curator` or the name of the Rails application if you are using curator within Rails. The collection is derived from the name of the Repository class, and it can be overriden. For example, if you implement a NoteRepository, the riak bucket will be `curator:development:notes` in development mode, and `curator:production:notes` in production mode.
+
+## Contributing
+
+We appreciate contributions of any kind. If you have code to show us, open a pull request. If you found a bug, want a new feature, or just want to talk design before submitting a pull request, open an issue.
+
+Please include tests with code contributions, and try to follow conventions that you find in the code.
+
+Riak is required in order to run the curator specs. After installing Riak, change the backend to eleveldb. For example, here is how to install on OS X using [homebrew](http://mxcl.github.com/homebrew/):
+
+```bash
+brew install riak
+edit /usr/local/Cellar/riak/<riak version>/libexec/etc/app.config
+
+  change
+    {storage_backend, riak_kv_bitcask_backend},
+  to
+    {storage_backend, riak_kv_eleveldb_backend},
+
+ulimit -n 1024
+riak start
+```
+
+
+### Writing new data stores
+
+Curator has a set of shared_examples for data store specs. Take a look at `spec/curator/shared_data_store_specs.rb`. These cover most of the data store functionality, so include these on your spec and make them pass:
+
+```ruby
+require 'spec_helper'
+require 'curator/shared_data_store_specs'
+
+module Curator::SomeNewDB
+  describe Curator::SomeNewDB::DataStore do
+    include_examples "data_store", DataStore
+
+    ... other specs specific to SomeNewDB ...
+  end
+end
