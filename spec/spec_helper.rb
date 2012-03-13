@@ -2,6 +2,8 @@ require 'i18n'
 require 'curator'
 require 'timecop'
 
+require 'ammeter/init'
+
 Curator.configure(:resettable_riak) do |config|
   config.environment = "test"
   config.migrations_path = "/tmp/curator_migrations"
