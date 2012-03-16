@@ -14,5 +14,5 @@ group :test do
   gem 'mongo', '1.6.0'
   gem 'rspec', '2.8.0'
   gem 'timecop', '0.3.5'
-  gem 'ammeter', '~> 0.1.3'
+  gem 'ammeter', '0.2.3'
 end
