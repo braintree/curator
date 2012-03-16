@@ -4,6 +4,8 @@ require 'timecop'
 
 require 'ammeter/init'
 
+TMP_PATH = File.expand_path(File.dirname(__FILE__) + '/../tmp')
+
 Curator.configure(:resettable_riak) do |config|
   config.environment = "test"
   config.migrations_path = "/tmp/curator_migrations"

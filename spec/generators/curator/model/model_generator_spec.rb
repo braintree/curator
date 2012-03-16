@@ -2,9 +2,10 @@ require 'spec_helper'
 require 'rails/generators/curator/model/model_generator'
 
 describe Curator::Generators::ModelGenerator do
-  destination File.expand_path("../../../../../tmp", __FILE__)
+  destination TMP_PATH
 
   before { prepare_destination }
+  after { FileUtils.rm_r TMP_PATH }
 
   describe 'the generated files' do
     before do
