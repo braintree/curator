@@ -24,6 +24,14 @@ shared_examples "data_store" do |data_store|
       keys = data_store.find_by_index("test_collection", :indexed_key, "indexed_value").map { |data| data[:key] }
       keys.sort.should == ["key1", "key2"]
     end
+
+    it "returns objects by key within a range" do
+      data_store.save(:collection_name => "test_collection",  :key => "key1", :value => {:indexed_key => 5}, :index => {:indexed_key => 5})
+      data_store.save(:collection_name => "test_collection",  :key => "key2", :value => {:indexed_key => 10}, :index => {:indexed_key => 10})
+
+      keys = data_store.find_by_index("test_collection", :indexed_key, (1..7)).map { |data| data[:key] }
+      keys.should == ["key1"]
+    end
   end
 
   describe "find_by_key" do
