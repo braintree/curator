@@ -74,9 +74,15 @@ module Curator
       end
 
       def self._normalize_query(query)
-        range = query.detect {|k,v| v.is_a? Range }
-        query[range.first] = {"$gte" => range.last.first, "$lt" => range.last.last} unless range.nil?
-        query
+        query.inject({}) do |hash, (key, value)|
+          case value
+          when Range
+            hash[key] = {'$gte' => value.first, '$lt' => value.last}
+          else
+            hash[key] = value
+          end
+          hash
+        end
       end
     end
   end
