@@ -26,11 +26,12 @@ shared_examples "data_store" do |data_store|
     end
 
     it "returns objects by key within a range" do
-      data_store.save(:collection_name => "test_collection",  :key => "key1", :value => {:indexed_key => 5}, :index => {:indexed_key => 5})
-      data_store.save(:collection_name => "test_collection",  :key => "key2", :value => {:indexed_key => 10}, :index => {:indexed_key => 10})
+      data_store.save(:collection_name => "test_collection",  :key => "key1", :value => {:indexed_key => 'e'}, :index => {:indexed_key => 'e'})
+      data_store.save(:collection_name => "test_collection",  :key => "key2", :value => {:indexed_key => 'g'}, :index => {:indexed_key => 'g'})
 
-      keys = data_store.find_by_index("test_collection", :indexed_key, (1..7)).map { |data| data[:key] }
-      keys.should == ["key1"]
+      data_store.find_by_index("test_collection", :indexed_key, ('a'..'f')).map { |data| data[:key] }.should == ["key1"]
+      data_store.find_by_index("test_collection", :indexed_key, ('f'..'h')).map { |data| data[:key] }.should == ["key2"]
+      data_store.find_by_index("test_collection", :indexed_key, ('a'..'h')).map { |data| data[:key] }.sort.should == ["key1", "key2"]
     end
   end
 
