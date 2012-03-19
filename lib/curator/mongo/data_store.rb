@@ -39,8 +39,10 @@ module Curator
       def self.find_by_index(collection_name, field, query)
         return [] if query.nil?
 
+        exp = {}
+        exp[field] = query
         collection = _collection(collection_name)
-        documents = collection.find(field.to_sym => query)
+        documents = collection.find(_normalize_query(exp))
         documents.map {|doc| normalize_document(doc) }
       end
 
@@ -69,6 +71,18 @@ module Curator
       def self.normalize_document(doc)
         key = doc.delete '_id'
         Hash[:key => key, :data => doc]
+      end
+
+      def self._normalize_query(query)
+        query.inject({}) do |hash, (key, value)|
+          case value
+          when Range
+            hash[key] = {'$gte' => value.first, '$lt' => value.last}
+          else
+            hash[key] = value
+          end
+          hash
+        end
       end
     end
   end
