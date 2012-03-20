@@ -3,6 +3,9 @@ source 'http://rubygems.org'
 gemspec
 
 gem 'rake', '0.9.2.2'
+gem 'sequel'
+gem 'sqlite3'
+
 
 group :development do
   gem 'rake_commit', '0.12.0'
