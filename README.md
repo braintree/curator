@@ -220,3 +220,8 @@ module Curator::SomeNewDB
     ... other specs specific to SomeNewDB ...
   end
 end
+```
+
+## License
+
+Curator is released under the [MIT license](http://www.opensource.org/licenses/MIT).
