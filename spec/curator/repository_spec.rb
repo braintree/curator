@@ -59,6 +59,26 @@ describe Curator::Repository do
     end
   end
 
+  context "find_by_index" do
+    it "returns empty array if not found" do
+      repository = test_repository do
+        indexed_fields :some_field
+      end
+
+      repository.find_by_some_field("Doesn't exist").should == []
+    end
+  end
+
+  context "find_first_by_index" do
+    it "returns nil if not found" do
+      repository = test_repository do
+        indexed_fields :some_field
+      end
+
+      repository.find_first_by_some_field("Doesn't exist").should be_nil
+    end
+  end
+
   describe "delete" do
     it "deletes an object" do
       repository = test_repository do
