@@ -265,6 +265,17 @@ describe Curator::Repository do
     end
   end
 
+  describe "save" do
+    it "returns the object that was saved" do
+      repository = test_repository do
+      end
+
+      model = TestModel.new
+
+      repository.save(model).should == model
+    end
+  end
+
   describe "save_without_timestamps" do
     it "does not update updated_at" do
       repository = test_repository do
@@ -284,6 +295,15 @@ describe Curator::Repository do
         found_model.created_at.should == created_time
         found_model.updated_at.should == created_time
       end
+    end
+
+    it "returns the object that was saved" do
+      repository = test_repository do
+      end
+
+      model = TestModel.new
+
+      repository.save_without_timestamps(model).should == model
     end
   end
 end

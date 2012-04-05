@@ -76,6 +76,8 @@ module Curator
         else
           object.instance_variable_set("@id", data_store.save(hash))
         end
+
+        object
       end
 
       def serialize(object)
