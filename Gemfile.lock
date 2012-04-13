@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    curator (0.4.0)
+    curator (0.5.0)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       json
@@ -89,11 +89,11 @@ GEM
     rake_commit (0.12.0)
     rdoc (3.12)
       json (~> 1.4)
-    riak-client (1.0.0)
+    riak-client (1.0.2)
       beefcake (~> 0.3.7)
       builder (>= 2.1.2)
       i18n (>= 0.4.0)
-      multi_json (~> 1.0.0)
+      multi_json (~> 1.0)
     rspec (2.8.0)
       rspec-core (~> 2.8.0)
       rspec-expectations (~> 2.8.0)
