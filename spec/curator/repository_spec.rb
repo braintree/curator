@@ -306,4 +306,42 @@ describe Curator::Repository do
       repository.save_without_timestamps(model).should == model
     end
   end
+
+  describe "mapping" do
+    it "runs serialize and deserialize" do
+      repository = test_repository do
+        map :some_field, :serialize => lambda { |i| (i + 1).to_s }, :deserialize => lambda { |str| "5#{str}".to_i }
+      end
+
+      model = TestModel.new(:some_field => 3)
+      repository.save(model)
+
+      found_model = repository.find_by_id(model.id)
+      found_model.some_field.should == 54
+    end
+
+    it "does not change value when no serialize is specified" do
+      repository = test_repository do
+        map :some_field, :deserialize => lambda { |str| Date.parse(str) }
+      end
+
+      model = TestModel.new(:some_field => Date.today)
+      repository.save(model)
+
+      found_model = repository.find_by_id(model.id)
+      found_model.some_field.should == Date.today
+    end
+
+    it "leaves value as is when no deserialize is specified" do
+      repository = test_repository do
+        map :some_field, :serialize => lambda { |date| date.year }
+      end
+
+      model = TestModel.new(:some_field => Date.today)
+      repository.save(model)
+
+      found_model = repository.find_by_id(model.id)
+      found_model.some_field.should == Date.today.year
+    end
+  end
 end

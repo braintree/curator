@@ -1,5 +1,6 @@
 require 'rubygems'
 
+require 'curator/mapper'
 require 'curator/migration'
 require 'curator/migrator'
 require 'curator/model'

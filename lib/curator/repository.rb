@@ -55,6 +55,14 @@ module Curator
         name.to_s.gsub("Repository", "").constantize
       end
 
+      def map(field_name, options)
+        _mappers << Mapper.new(field_name, options)
+      end
+
+      def _mappers
+        @mappers ||= []
+      end
+
       def migrator
         @migrator ||= Curator::Migrator.new(collection_name)
       end
@@ -82,7 +90,8 @@ module Curator
       end
 
       def serialize(object)
-        object.instance_values
+        attributes = object.instance_values.with_indifferent_access
+        _mappers.inject(attributes) { |attrs, mapper| mapper.serialize(attrs) }
       end
 
       def _build_finder_methods(field_name)
@@ -106,7 +115,8 @@ module Curator
       end
 
       def deserialize(attributes)
-        klass.new(attributes)
+        mapped_attributes = _mappers.inject(attributes) { |attrs, mapper| mapper.deserialize(attrs) }
+        klass.new(mapped_attributes)
       end
 
       def _deserialize(id, data)
