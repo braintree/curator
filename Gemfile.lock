@@ -1,11 +1,11 @@
 PATH
   remote: .
   specs:
-    curator (0.4.0)
+    curator (0.5.0)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       json
-      riak-client (>= 1.0.0)
+      riak-client (= 1.0.0)
 
 GEM
   remote: http://rubygems.org/
