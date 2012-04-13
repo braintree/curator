@@ -22,6 +22,7 @@ module Curator
 
       def delete(object)
         data_store.delete(collection_name, object.id)
+        nil
       end
 
       def find_by_created_at(start_time, end_time)

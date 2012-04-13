@@ -80,7 +80,7 @@ describe Curator::Repository do
   end
 
   describe "delete" do
-    it "deletes an object" do
+    it "deletes an object and returns nil" do
       repository = test_repository do
       end
 
@@ -88,7 +88,7 @@ describe Curator::Repository do
       repository.save(model)
 
       repository.find_by_id(model.id).should_not be_nil
-      repository.delete(model)
+      repository.delete(model).should be_nil
       repository.find_by_id(model.id).should be_nil
     end
   end
