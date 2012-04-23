@@ -54,6 +54,22 @@ module Curator
           DataStore::_bucket_name("my_bucket").should == "#{Curator.config.bucket_prefix}:test:my_bucket"
         end
       end
+
+      describe "Riak.escaper hardwiring to CGI is backward compatible with Riak client default setting" do
+        it "can read data with CGI escaper that was written with URI escaper" do
+          ::Riak.escaper = URI
+          DataStore.save(:collection_name => "fake_things", :key => "some_key", :value => {"k" => "v"})
+          ::Riak.escaper = CGI
+          DataStore.find_by_key("fake_things", "some_key").should == {:key => "some_key", :data => {"k" => "v"}}
+        end
+
+        it "can read data with URI escaper that was written with CGI escaper" do
+          ::Riak.escaper = CGI
+          DataStore.save(:collection_name => "fake_things", :key => "some_key", :value => {"k" => "v"})
+          ::Riak.escaper = URI
+          DataStore.find_by_key("fake_things", "some_key").should == {:key => "some_key", :data => {"k" => "v"}}
+        end
+      end
     end
   end
 end

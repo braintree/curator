@@ -33,6 +33,13 @@ shared_examples "data_store" do |data_store|
       data_store.find_by_index("test_collection", :indexed_key, ('f'..'h')).map { |data| data[:key] }.should == ["key2"]
       data_store.find_by_index("test_collection", :indexed_key, ('a'..'h')).map { |data| data[:key] }.sort.should == ["key1", "key2"]
     end
+
+    it "can find objects by index with a key containing a + character" do
+      data_store.save(:collection_name => "test_collection", :key => "key1", :value => {:indexed_key => "indexed+value"}, :index => {:indexed_key => "indexed+value"})
+
+      keys = data_store.find_by_index("test_collection", :indexed_key, "indexed+value").map { |data| data[:key] }
+      keys.sort.should == ["key1"]
+    end
   end
 
   describe "find_by_key" do
@@ -42,6 +49,18 @@ shared_examples "data_store" do |data_store|
 
     it "returns an object by key" do
       data_store.save(:collection_name => "fake_things", :key => "some_key", :value => {"k" => "v"})
+      data_store.find_by_key("fake_things", "some_key").should == {:key => "some_key", :data => {"k" => "v"}}
+    end
+
+    it "object key can contain a + character" do
+      data_store.save(:collection_name => "fake_things", :key => "special+key", :value => {"k" => "v"})
+      data_store.find_by_key("fake_things", "special+key").should == {:key => "special+key", :data => {"k" => "v"}}
+    end
+
+    it "works across escapers with :" do
+      ::Riak.escaper = URI
+      data_store.save(:collection_name => "fake_things", :key => "some_key", :value => {"k" => "v"})
+      ::Riak.escaper = CGI
       data_store.find_by_key("fake_things", "some_key").should == {:key => "some_key", :data => {"k" => "v"}}
     end
   end
