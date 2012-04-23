@@ -56,13 +56,6 @@ shared_examples "data_store" do |data_store|
       data_store.save(:collection_name => "fake_things", :key => "special+key", :value => {"k" => "v"})
       data_store.find_by_key("fake_things", "special+key").should == {:key => "special+key", :data => {"k" => "v"}}
     end
-
-    it "works across escapers with :" do
-      ::Riak.escaper = URI
-      data_store.save(:collection_name => "fake_things", :key => "some_key", :value => {"k" => "v"})
-      ::Riak.escaper = CGI
-      data_store.find_by_key("fake_things", "some_key").should == {:key => "some_key", :data => {"k" => "v"}}
-    end
   end
 
   describe "self.save" do
