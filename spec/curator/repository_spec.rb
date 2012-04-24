@@ -28,6 +28,20 @@ describe Curator::Repository do
       repository.find_first_by_some_field("Acme Inc.").should == model
     end
 
+    it "can index arrays of values" do
+      repository = test_repository do
+        indexed_fields :multiple_values
+      end
+
+      model = TestModel.new(:multiple_values => ["first", "second"])
+
+      repository.save(model)
+
+      repository.find_by_multiple_values("first").should == [model]
+      repository.find_by_multiple_values("second").should == [model]
+      repository.find_by_multiple_values("third").should == []
+    end
+
     it "indexes created_at and updated_at by default" do
       repository = test_repository do
       end

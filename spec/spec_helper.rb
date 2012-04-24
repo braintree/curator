@@ -25,7 +25,7 @@ end
 
 class TestModel
   include Curator::Model
-  attr_reader :id, :some_field
+  attr_reader :id, :some_field, :multiple_values
 end
 
 def test_repository(&block)

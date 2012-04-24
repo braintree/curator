@@ -40,6 +40,19 @@ shared_examples "data_store" do |data_store|
       keys = data_store.find_by_index("test_collection", :indexed_key, "indexed+value").map { |data| data[:key] }
       keys.sort.should == ["key1"]
     end
+
+    it "can find objects by index with an array index" do
+      data_store.save(
+        :collection_name => "test_collection",
+        :key => "key1",
+        :value => {:indexed_key => ["indexed_value1", "indexed_value2"]},
+        :index => {:indexed_key => ["indexed_value1", "indexed_value2"]}
+      )
+
+      data_store.find_by_index("test_collection", :indexed_key, "indexed_value1").map { |data| data[:key] }.should == ["key1"]
+      data_store.find_by_index("test_collection", :indexed_key, "indexed_value2").map { |data| data[:key] }.should == ["key1"]
+      data_store.find_by_index("test_collection", :indexed_key, "indexed_value3").map { |data| data[:key] }.should == []
+    end
   end
 
   describe "find_by_key" do

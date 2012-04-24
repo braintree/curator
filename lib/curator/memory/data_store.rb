@@ -14,15 +14,18 @@ module Curator
         bucket = _bucket_name(options[:collection_name])
         object = options[:value]
         key = options[:key]
-        indexed_values = options.fetch(:index, {})
+        indexes = options.fetch(:index, {})
 
         key = _generate_key(bucket) unless key
 
         _records(bucket).store(key, object)
-        indexed_values.each do |index_name, indexed_value|
+        indexes.each do |index_name, index_data|
           index = _index(bucket, index_name)
-          index[indexed_value] ||= []
-          index[indexed_value] << key unless index[indexed_value].include?(key)
+
+          _normalized_index_values(index_data).each do |index_value|
+            index[index_value] ||= []
+            index[index_value] << key unless index[index_value].include?(key)
+          end
         end
 
         key
@@ -84,6 +87,14 @@ module Curator
 
       def self._index(bucket, index_name)
         _indices(bucket)[index_name] ||= {}
+      end
+
+      def self._normalized_index_values(indexed_data)
+        if indexed_data.is_a?(Array)
+          indexed_data
+        else
+          [indexed_data]
+        end
       end
 
       def self._generate_key(bucket)
