@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    curator (0.6.0)
+    curator (0.7.0)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       json
