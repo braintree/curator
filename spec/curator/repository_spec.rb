@@ -44,218 +44,292 @@ describe Curator::Repository do
 
   describe "indexed_fields" do
     it "adds find methods for the indexed fields" do
-      repository = test_repository do
+      def_transient_class(:TestModelRepository) do
+        include Curator::Repository
+        attr_reader :id, :some_field
         indexed_fields :some_field
       end
 
+      def_transient_class(:TestModel) do
+        include Curator::Model
+        attr_reader :id, :some_field
+      end
+
       model = TestModel.new(:some_field => "Acme Inc.")
+      TestModelRepository.save(model)
 
-      repository.save(model)
-
-      repository.find_by_some_field("Acme Inc.").should == [model]
+      TestModelRepository.find_by_some_field("Acme Inc.").should == [model]
     end
 
     it "adds find first methods for the indexed fields" do
-      repository = test_repository do
+      def_transient_class(:TestModelRepository) do
+        include Curator::Repository
+        attr_reader :id, :some_field
         indexed_fields :some_field
       end
 
+      def_transient_class(:TestModel) do
+        include Curator::Model
+        attr_reader :id, :some_field
+      end
+
       model = TestModel.new(:some_field => "Acme Inc.")
+      TestModelRepository.save(model)
 
-      repository.save(model)
-
-      repository.find_first_by_some_field("Acme Inc.").should == model
+      TestModelRepository.find_first_by_some_field("Acme Inc.").should == model
     end
 
     it "can index arrays of values" do
-      repository = test_repository do
+      def_transient_class(:TestModelRepository) do
+        include Curator::Repository
+        attr_reader :id, :multiple_values
         indexed_fields :multiple_values
       end
 
+      def_transient_class(:TestModel) do
+        include Curator::Model
+        attr_reader :id, :multiple_values
+      end
+
       model = TestModel.new(:multiple_values => ["first", "second"])
+      TestModelRepository.save(model)
 
-      repository.save(model)
-
-      repository.find_by_multiple_values("first").should == [model]
-      repository.find_by_multiple_values("second").should == [model]
-      repository.find_by_multiple_values("third").should == []
+      TestModelRepository.find_by_multiple_values("first").should == [model]
+      TestModelRepository.find_by_multiple_values("second").should == [model]
+      TestModelRepository.find_by_multiple_values("third").should == []
     end
 
     it "indexes created_at and updated_at by default" do
-      repository = test_repository do
+      def_transient_class(:TestModelRepository) do
+        include Curator::Repository
+        attr_reader :id, :some_field
+        indexed_fields :some_field
+      end
+
+      def_transient_class(:TestModel) do
+        include Curator::Model
+        attr_reader :id, :some_field
       end
 
       model = TestModel.new(:some_field => "Acme Inc.")
+      TestModelRepository.save(model)
 
-      repository.save(model)
+      TestModelRepository.find_by_created_at(15.minutes.ago.utc, 5.minutes.ago.utc).should == []
+      TestModelRepository.find_by_updated_at(15.minutes.ago.utc, 5.minutes.ago.utc).should == []
 
-      repository.find_by_created_at(15.minutes.ago.utc, 5.minutes.ago.utc).should == []
-      repository.find_by_updated_at(15.minutes.ago.utc, 5.minutes.ago.utc).should == []
+      TestModelRepository.find_by_created_at(5.minutes.ago.utc, Time.now.utc).should == [model]
+      TestModelRepository.find_by_updated_at(5.minutes.ago.utc, Time.now.utc).should == [model]
 
-      repository.find_by_created_at(5.minutes.ago.utc, Time.now.utc).should == [model]
-      repository.find_by_updated_at(5.minutes.ago.utc, Time.now.utc).should == [model]
-
-      repository.find_by_created_at(1.minute.from_now.utc, 5.minutes.from_now.utc).should == []
-      repository.find_by_updated_at(1.minute.from_now.utc, 5.minutes.from_now.utc).should == []
+      TestModelRepository.find_by_created_at(1.minute.from_now.utc, 5.minutes.from_now.utc).should == []
+      TestModelRepository.find_by_updated_at(1.minute.from_now.utc, 5.minutes.from_now.utc).should == []
     end
 
     it "indexes version by default" do
-      repository = test_repository do
+      def_transient_class(:TestModelRepository) do
+        include Curator::Repository
+        attr_reader :id, :some_field
+        indexed_fields :some_field
+      end
+
+      def_transient_class(:TestModel) do
+        include Curator::Model
+        attr_reader :id, :some_field
       end
 
       model = TestModel.new(:some_field => "Acme Inc.")
+      TestModelRepository.save(model)
 
-      repository.save(model)
-
-      repository.find_by_version(model.version).should == [model]
-      repository.find_by_version(model.version + 1).should be_empty
+      TestModelRepository.find_by_version(model.version).should == [model]
+      TestModelRepository.find_by_version(model.version + 1).should be_empty
     end
   end
 
   context "find_by_index" do
     it "returns empty array if not found" do
-      repository = test_repository do
+      def_transient_class(:TestModelRepository) do
+        include Curator::Repository
+        attr_reader :id, :some_field
         indexed_fields :some_field
       end
 
-      repository.find_by_some_field("Doesn't exist").should == []
+      def_transient_class(:TestModel) do
+        include Curator::Model
+        attr_reader :id, :some_field
+      end
+
+      TestModelRepository.find_by_some_field("Doesn't exist").should == []
     end
   end
 
   context "find_first_by_index" do
     it "returns nil if not found" do
-      repository = test_repository do
+      def_transient_class(:TestModelRepository) do
+        include Curator::Repository
+        attr_reader :id, :some_field
         indexed_fields :some_field
       end
 
-      repository.find_first_by_some_field("Doesn't exist").should be_nil
+      def_transient_class(:TestModel) do
+        include Curator::Model
+        attr_reader :id, :some_field
+      end
+
+      TestModelRepository.find_first_by_some_field("Doesn't exist").should be_nil
     end
   end
 
   describe "delete" do
     it "deletes an object and returns nil" do
-      repository = test_repository do
+      def_transient_class(:TestModelRepository) do
+        include Curator::Repository
+        attr_reader :id, :some_field
+        indexed_fields :some_field
+      end
+
+      def_transient_class(:TestModel) do
+        include Curator::Model
+        attr_reader :id, :some_field
       end
 
       model = TestModel.new
-      repository.save(model)
+      TestModelRepository.save(model)
 
-      repository.find_by_id(model.id).should_not be_nil
-      repository.delete(model).should be_nil
-      repository.find_by_id(model.id).should be_nil
+      TestModelRepository.find_by_id(model.id).should_not be_nil
+      TestModelRepository.delete(model).should be_nil
+      TestModelRepository.find_by_id(model.id).should be_nil
     end
   end
 
   describe "serialization" do
     it "does not persist nil values" do
-      repository = test_repository do
+      def_transient_class(:TestModelRepository) do
+        include Curator::Repository
+        attr_reader :id, :some_field
+        indexed_fields :some_field
       end
 
-      model = TestModel.new(
-        :some_field => nil
-      )
+      def_transient_class(:TestModel) do
+        include Curator::Model
+        attr_reader :id, :some_field
+      end
 
-      repository.save(model)
+      model = TestModel.new(:some_field => nil)
+
+      TestModelRepository.save(model)
 
       riak_data = Curator.data_store.find_by_key("test_models", model.id)[:data]
       riak_data.has_key?("some_field").should be_false
     end
 
     it "persists timestamps" do
-      repository = test_repository do
+      def_transient_class(:TestModelRepository) do
+        include Curator::Repository
+        attr_reader :id
+      end
+
+      def_transient_class(:TestModel) do
+        include Curator::Model
+        attr_reader :id
       end
 
       created_time = Time.parse("2011-1-1 12:00 CST")
       Timecop.freeze(created_time) do
-        model = TestModel.new(
-          :created_at => nil,
-          :updated_at => nil
-        )
+        model = TestModel.new(:created_at => nil, :updated_at => nil)
 
-        repository.save(model)
+        TestModelRepository.save(model)
 
-        found_record = repository.find_by_id(model.id)
+        found_record = TestModelRepository.find_by_id(model.id)
         found_record.created_at.should == created_time
         found_record.updated_at.should == created_time
       end
     end
 
     it "persists the model's current version on the initial save" do
-      repository = test_repository do
+      def_transient_class(:TestModelRepository) do
+        include Curator::Repository
+        attr_reader :id
       end
 
-      class VersionedModel
+      def_transient_class(:TestModel) do
         include Curator::Model
         current_version 42
         attr_accessor :id
       end
 
-      model = VersionedModel.new
-      repository.save(model)
+      model = TestModel.new
+      TestModelRepository.save(model)
 
       riak_data = Curator.data_store.find_by_key("test_models", model.id)[:data]
       riak_data["version"].should == 42
     end
 
     it "persists created_at on multiple saves" do
-      repository = test_repository do
+      def_transient_class(:TestModelRepository) do
+        include Curator::Repository
+        attr_reader :id
       end
 
-      created_time = Time.parse("2011-1-1 12:00 CST")
-      Timecop.freeze(created_time) do
-        model = TestModel.new(
-          :created_at => nil,
-          :updated_at => nil
-        )
+      def_transient_class(:TestModel) do
+        include Curator::Model
+        attr_accessor :id
+      end
 
-        repository.save(model)
+      Timecop.freeze(created_time = Time.parse("2011-1-1 12:00 CST")) do
+        model = TestModel.new(:created_at => nil, :updated_at => nil)
 
-        found_record = repository.find_by_id(model.id)
-        repository.save(found_record)
+        TestModelRepository.save(model)
 
-        found_record = repository.find_by_id(model.id)
+        found_record = TestModelRepository.find_by_id(model.id)
+        TestModelRepository.save(found_record)
+
+        found_record = TestModelRepository.find_by_id(model.id)
         found_record.created_at.should == created_time
       end
     end
 
     it "updated updated_at on subsequent saves, but not created_at" do
-      repository = test_repository do
+      def_transient_class(:TestModelRepository) do
+        include Curator::Repository
+        attr_reader :id
+      end
+
+      def_transient_class(:TestModel) do
+        include Curator::Model
+        attr_accessor :id
       end
 
       model = nil
-      created_time = Time.parse("2011-1-1 12:00 CST")
-      Timecop.freeze(created_time) do
-        model = TestModel.new(
-          :created_at => nil,
-          :updated_at => nil
-        )
-
-        repository.save(model)
+      Timecop.freeze(created_time = Time.parse("2011-1-1 12:00 CST")) do
+        model = TestModel.new(:created_at => nil, :updated_at => nil)
+        TestModelRepository.save(model)
       end
 
       Timecop.freeze(created_time + 1.day) do
-        found_record = repository.find_by_id(model.id)
-        repository.save(found_record)
+        found_record = TestModelRepository.find_by_id(model.id)
+        TestModelRepository.save(found_record)
 
-        found_record = repository.find_by_id(model.id)
+        found_record = TestModelRepository.find_by_id(model.id)
         found_record.created_at.should == created_time
         found_record.updated_at.should_not == created_time
       end
     end
 
     it "persists timestamps in UTC" do
-      repository = test_repository do
+      def_transient_class(:TestModelRepository) do
+        include Curator::Repository
+        attr_reader :id
       end
 
-      created_time = Time.parse("2011-1-1 12:00 CST")
-      Timecop.freeze(created_time) do
-        model = TestModel.new(
-          :created_at => nil,
-          :updated_at => nil
-        )
+      def_transient_class(:TestModel) do
+        include Curator::Model
+        attr_accessor :id
+      end
 
-        repository.save(model)
-        found_record = repository.find_by_id(model.id)
+      Timecop.freeze(created_time = Time.parse("2011-1-1 12:00 CST")) do
+        model = TestModel.new(:created_at => nil, :updated_at => nil)
+
+        TestModelRepository.save(model)
+        found_record = TestModelRepository.find_by_id(model.id)
 
         found_record.created_at.zone.should == "UTC"
         found_record.updated_at.zone.should == "UTC"
@@ -270,10 +344,17 @@ describe Curator::Repository do
       end
 
       it "runs applicable migrations" do
-        repository = test_repository do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+          attr_reader :id, :some_field
         end
 
-        write_migration repository.collection_name, "0001_one.rb", <<-END
+        def_transient_class(:TestModel) do
+          include Curator::Model
+          attr_accessor :id, :some_field
+        end
+
+        write_migration TestModelRepository.collection_name, "0001_one.rb", <<-END
           class One < Curator::Migration
             def migrate(hash)
               hash.merge("some_field" => "new value")
@@ -281,23 +362,28 @@ describe Curator::Repository do
           end
         END
 
-        model = TestModel.new(
-          :some_field => "old value"
-        )
+        model = TestModel.new(:some_field => "old value")
         model.version.should == 0
 
-        repository.save(model)
+        TestModelRepository.save(model)
 
-        found_record = repository.find_by_id(model.id)
+        found_record = TestModelRepository.find_by_id(model.id)
         found_record.some_field.should == "new value"
         found_record.version.should == 1
       end
 
       it "does not run migrations if version is current" do
-        repository = test_repository do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+          attr_reader :id, :some_field
         end
 
-        write_migration repository.collection_name, "0001_one.rb", <<-END
+        def_transient_class(:TestModel) do
+          include Curator::Model
+          attr_accessor :id, :some_field
+        end
+
+        write_migration TestModelRepository.collection_name, "0001_one.rb", <<-END
           class One < Curator::Migration
             def migrate(hash)
               hash.merge("some_field" => "new value")
@@ -305,14 +391,12 @@ describe Curator::Repository do
           end
         END
 
-        model = TestModel.new(
-          :some_field => "old value"
-        )
+        model = TestModel.new(:some_field => "old value")
         model.version = 1
 
-        repository.save(model)
+        TestModelRepository.save(model)
 
-        found_record = repository.find_by_id(model.id)
+        found_record = TestModelRepository.find_by_id(model.id)
         found_record.some_field.should == "old value"
         found_record.version.should == 1
       end
@@ -321,43 +405,62 @@ describe Curator::Repository do
 
   describe "save" do
     it "returns the object that was saved" do
-      repository = test_repository do
+      def_transient_class(:TestModelRepository) do
+        include Curator::Repository
+        attr_reader :id
+      end
+
+      def_transient_class(:TestModel) do
+        include Curator::Model
+        attr_accessor :id
       end
 
       model = TestModel.new
-
-      repository.save(model).should == model
+      TestModelRepository.save(model).should == model
     end
   end
 
   describe "save_without_timestamps" do
     it "does not update updated_at" do
-      repository = test_repository do
+      def_transient_class(:TestModelRepository) do
+        include Curator::Repository
+        attr_reader :id
+      end
+
+      def_transient_class(:TestModel) do
+        include Curator::Model
+        attr_accessor :id
       end
 
       created_time = Time.parse("2012-1-1 12:00 CST")
       model = TestModel.new
 
       Timecop.freeze(created_time) do
-        repository.save(model)
+        TestModelRepository.save(model)
       end
 
       Timecop.freeze(created_time + 1.day) do
-        repository.save_without_timestamps(model)
+        TestModelRepository.save_without_timestamps(model)
 
-        found_model = repository.find_by_id(model.id)
+        found_model = TestModelRepository.find_by_id(model.id)
         found_model.created_at.should == created_time
         found_model.updated_at.should == created_time
       end
     end
 
     it "returns the object that was saved" do
-      repository = test_repository do
+      def_transient_class(:TestModelRepository) do
+        include Curator::Repository
+        attr_reader :id
+      end
+
+      def_transient_class(:TestModel) do
+        include Curator::Model
+        attr_accessor :id
       end
 
       model = TestModel.new
-
-      repository.save_without_timestamps(model).should == model
+      TestModelRepository.save_without_timestamps(model).should == model
     end
   end
 end

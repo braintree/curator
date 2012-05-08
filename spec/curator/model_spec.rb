@@ -1,25 +1,32 @@
 require "spec_helper"
 
 describe Curator::Model do
+  before(:each) do
+    def_transient_class(:TestModel) do
+      include Curator::Model
+      attr_reader :id
+    end
+  end
+
   describe "initialize" do
     it "sets instance values provided in the args" do
-      model_class = Class.new do
+      def_transient_class(:AModel) do
         include Curator::Model
         attr_reader :one, :two
       end
 
-      model = model_class.new(:two => 't', :three => 'th')
+      model = AModel.new(:two => 't', :three => 'th')
       model.one.should be_nil
       model.two.should == 't'
     end
 
     it "does not set arbitrary fields" do
-      model_class = Class.new do
+      def_transient_class(:AModel) do
         include Curator::Model
         attr_reader :foo
       end
 
-      model = model_class.new(:foo => "bar", :baz => "qux")
+      model = AModel.new(:foo => "bar", :baz => "qux")
       model.instance_variable_get("@baz").should be_nil
     end
   end
@@ -81,12 +88,12 @@ describe Curator::Model do
     end
 
     it "can be set declaratively" do
-      model_class = Class.new do
+      def_transient_class(:VersionedModel) do
         include Curator::Model
         current_version 12
       end
 
-      instance = model_class.new
+      instance = VersionedModel.new
       instance.version.should == 12
     end
   end

@@ -42,23 +42,6 @@ def def_transient_class(name, &block)
   Object.const_set name, Class.new(&block)
 end
 
-class TestModel
-  include Curator::Model
-  attr_reader :id, :some_field, :multiple_values
-end
-
-def test_repository(&block)
-  Class.new do
-    include Curator::Repository
-
-    def self.name
-      "TestModelRepository"
-    end
-
-    instance_eval(&block)
-  end
-end
-
 def with_config(&block)
   around(:each) do |example|
     old_config = Curator.config
