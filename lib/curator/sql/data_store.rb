@@ -1,4 +1,5 @@
 require 'sequel'
+require 'securerandom'
 require 'active_support/core_ext/hash/except'
 
 module Curator
@@ -10,7 +11,7 @@ module Curator
 
       def self.save(options)
         table_name = options[:collection_name]
-        key = options[:key]
+        key = options[:key] || SecureRandom.hex
         value = options[:value]
         table = client[table_name.to_sym]
         if table.filter(:key => key).empty?
