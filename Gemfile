@@ -3,9 +3,8 @@ source 'http://rubygems.org'
 gemspec
 
 gem 'rake', '0.9.2.2'
-gem 'sequel'
-gem 'sqlite3'
-
+gem 'sequel', '3.35.0'
+gem 'pg', '0.13.2'
 
 group :development do
   gem 'rake_commit', '0.12.0'

@@ -4,7 +4,18 @@ require 'rspec/core/rake_task'
 
 RSpec::Core::RakeTask.new(:spec)
 
-task :default => :spec
+task :default => ["postgresql:reset", "spec"]
+
+namespace :postgresql do
+
+  desc "Drops and creates postgresql database"
+  task :reset do
+    unless `psql --list | grep curator_test`.empty?
+      system "dropdb curator_test"
+    end
+    system "createdb curator_test"
+  end
+end
 
 namespace :gem do
   desc "clean generated gems"

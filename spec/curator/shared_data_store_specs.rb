@@ -45,13 +45,13 @@ shared_examples "data_store" do |data_store|
       data_store.save(
         :collection_name => "test_collection",
         :key => "key1",
-        :value => {:indexed_key => ["indexed_value1", "indexed_value2"]},
-        :index => {:indexed_key => ["indexed_value1", "indexed_value2"]}
+        :value => {:indexed_array_key => ["indexed_value1", "indexed_value2"]},
+        :index => {:indexed_array_key => ["indexed_value1", "indexed_value2"]}
       )
 
-      data_store.find_by_index("test_collection", :indexed_key, "indexed_value1").map { |data| data[:key] }.should == ["key1"]
-      data_store.find_by_index("test_collection", :indexed_key, "indexed_value2").map { |data| data[:key] }.should == ["key1"]
-      data_store.find_by_index("test_collection", :indexed_key, "indexed_value3").map { |data| data[:key] }.should == []
+      data_store.find_by_index("test_collection", :indexed_array_key, "indexed_value1").map { |data| data[:key] }.should == ["key1"]
+      data_store.find_by_index("test_collection", :indexed_array_key, "indexed_value2").map { |data| data[:key] }.should == ["key1"]
+      data_store.find_by_index("test_collection", :indexed_array_key, "indexed_value3").map { |data| data[:key] }.should == []
     end
   end
 
@@ -95,11 +95,11 @@ shared_examples "data_store" do |data_store|
       data_store.save(
         :collection_name => "fake_things",
         :key => "blah",
-        :value => {:foo => "foo-data", :bar => "bar-data"},
-        :index => {:foo => "foo-data", :bar => "bar-data"}
+        :value => {:foo => 1, :bar => "bar-data"},
+        :index => {:foo => 1, :bar => "bar-data"}
       )
 
-      foo_result = data_store.find_by_index("fake_things", :foo, "foo-data").first
+      foo_result = data_store.find_by_index("fake_things", :foo, 1).first
       foo_result[:key].should == "blah"
 
       bar_result = data_store.find_by_index("fake_things", :bar, "bar-data").first

@@ -1,0 +1,3 @@
+test:
+  :host: localhost
+  :database: curator_test

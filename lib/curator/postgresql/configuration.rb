@@ -1,12 +1,12 @@
 module Curator
-  module Sql
+  module Postgresql
     class Configuration
       include Curator::Configuration
 
-      attr_accessor :uri
+      attr_accessor :uri, :postgresql_config_file
 
       def data_store
-        Curator::Sql::DataStore
+        Curator::Postgresql::DataStore
       end
     end
   end
