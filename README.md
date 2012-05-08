@@ -4,7 +4,7 @@ See [Untangle Domain and Persistence Logic with Curator](http://www.braintreepay
 
 Curator is a model and repository framework for Ruby. It's an alternative to ActiveRecord-like libraries where models are tightly coupled to persistence. Curator allows you to write domain object that are persistence free, and then write repositories that persist these objects. These ideas are largely taken from the [Repository](http://domaindrivendesign.org/node/123) section of [Domain Driven Design](http://www.amazon.com/Domain-Driven-Design-Tackling-Complexity-Software/dp/0321125215).
 
-Currently, curator supports [Riak](http://basho.com/products/riak-overview/) for persistence. If you are interested in enhancing curator to support other data stores, please let me know.
+Currently, curator supports [Riak](http://basho.com/products/riak-overview/), [MongoDB](http://www.mongodb.org/) and an in-memory data store for persistence. If you are interested in enhancing curator to support other data stores, please let us know.
 
 ## Usage
 
