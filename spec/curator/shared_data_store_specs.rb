@@ -57,7 +57,7 @@ shared_examples "data_store" do |data_store|
 
   describe "find_by_key" do
     it "returns nil when the key does not exist" do
-      data_store.find_by_key("fake_things", "some_key").should be_nil
+      data_store.find_by_key("fake_things", "some_key_that_does_not_exist").should be_nil
     end
 
     it "returns an object by key" do

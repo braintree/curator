@@ -56,6 +56,10 @@ module Curator
       end
 
       describe "Riak.escaper hardwiring to CGI is backward compatible with Riak client default setting" do
+        after :all do
+          ::Riak.escaper = CGI
+        end
+
         it "can read data with CGI escaper that was written with URI escaper" do
           ::Riak.escaper = URI
           DataStore.save(:collection_name => "fake_things", :key => "some_key", :value => {"k" => "v"})
