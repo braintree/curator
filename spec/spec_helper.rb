@@ -21,6 +21,25 @@ RSpec.configure do |config|
   config.after(:each) do
     Curator.data_store.reset!
   end
+
+  config.around(:each) do |test|
+    @transient_classes = []
+    test.call
+    @transient_classes.each do |name|
+      begin
+        Object.send(:remove_const, name)
+      rescue Exception => e
+        puts e.message
+        puts e.backtrace
+      end
+    end
+  end
+end
+
+def def_transient_class(name, &block)
+  @transient_classes << name
+  raise("Cannot define transient class, constant #{name} is already defined") if Object.const_defined?(name)
+  Object.const_set name, Class.new(&block)
 end
 
 class TestModel

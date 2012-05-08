@@ -3,6 +3,45 @@ require 'active_support/core_ext/numeric/time'
 require 'active_support/core_ext/date/calculations'
 
 describe Curator::Repository do
+  describe "collection_name" do
+    it "has a default value derived from the repository class name" do
+       def_transient_class(:SomeModel) do
+         include Curator::Model
+         attr_reader :id
+       end
+
+       def_transient_class(:SomeModelRepository) do
+         include Curator::Repository
+       end
+
+       SomeModelRepository.collection_name.should == "some_models"
+
+       model = SomeModel.new()
+       SomeModelRepository.save(model)
+
+       SomeModelRepository.find_by_id(model.id).should == model
+    end
+
+    it "allows overriding the collection name" do
+      def_transient_class(:SomeModel) do
+        include Curator::Model
+        attr_reader :id
+      end
+
+      def_transient_class(:SomeModelRepository) do
+        include Curator::Repository
+        collection "an_explicit_collection"
+      end
+
+      SomeModelRepository.collection_name.should == "an_explicit_collection"
+
+      model = SomeModel.new()
+      SomeModelRepository.save(model)
+
+      SomeModelRepository.find_by_id(model.id).should == model
+    end
+  end
+
   describe "indexed_fields" do
     it "adds find methods for the indexed fields" do
       repository = test_repository do
@@ -111,6 +150,7 @@ describe Curator::Repository do
     it "does not persist nil values" do
       repository = test_repository do
       end
+
       model = TestModel.new(
         :some_field => nil
       )

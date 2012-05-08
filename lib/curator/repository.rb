@@ -8,6 +8,10 @@ module Curator
     extend ActiveSupport::Concern
 
     module ClassMethods
+      def collection(explicit_collection_name)
+        @collection_name = explicit_collection_name
+      end
+
       def collection_name
         @collection_name ||= default_collection_name
       end
