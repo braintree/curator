@@ -9,6 +9,10 @@ module Curator
 
     module ClassMethods
       def collection_name
+        @collection_name ||= default_collection_name
+      end
+
+      def default_collection_name
         ActiveSupport::Inflector.tableize(klass)
       end
 
