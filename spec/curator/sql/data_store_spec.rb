@@ -16,7 +16,7 @@ module Curator
         end
 
         before :all do
-          File.delete "test.db"
+          FileUtils.rm_f("test.db")
           db = Sequel.connect "sqlite://test.db"
           db.create_table :test_collection do
             primary_key :id
