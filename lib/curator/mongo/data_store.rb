@@ -9,7 +9,12 @@ module Curator
         config = YAML.load(File.read(Curator.config.mongo_config_file))[Curator.config.environment]
         host = config.delete(:host)
         port = config.delete(:port)
+        password = config.delete(:password)
+        username = config.delete(:username)
+        @database_name = config.delete(:database) || default_db_name
         @client = ::Mongo::Connection.new(host, port, config)
+        @client.add_auth(@database_name, username, password) if username and password
+        @client
       end
 
       def self.remove_all_keys
@@ -64,8 +69,12 @@ module Curator
         client.db(_db_name)
       end
 
-      def self._db_name
+      def self.default_db_name
         "#{Curator.config.database}:#{Curator.config.environment}"
+      end
+
+      def self._db_name
+        @database_name
       end
 
       def self.normalize_document(doc)

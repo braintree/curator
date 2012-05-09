@@ -33,6 +33,77 @@ module Curator
             DataStore.instance_variable_set("@client", nil)
           end
         end
+        context "returns a mongo client with" do
+          after (:each) do
+            DataStore.instance_variable_set(:@client, nil)
+            File.stub(:read).and_return(<<-YML)
+            test:
+              :host: localhost
+              :port: 27017
+            YML
+            client = DataStore.client
+          end
+
+          it "a specific database when included in the YML file" do
+            begin
+              File.stub(:read).and_return(<<-YML)
+              test:
+                :host: localhost
+                :port: 27017
+                :database: test_db_auth
+              YML
+              DataStore.instance_variable_set(:@client, nil)
+              client = DataStore.client
+              DataStore._db_name.should == 'test_db_auth'
+            ensure
+              DataStore.instance_variable_set(:@client, nil)
+            end
+          end
+
+          it "auth configured when included in the YML file" do
+            begin
+              File.stub(:read).and_return(<<-YML)
+              test:
+                :host: localhost
+                :port: 27017
+                :database: test_db_auth
+                :password: password1
+                :username: my_username
+              YML
+              DataStore.instance_variable_set(:@client, nil)
+              client = DataStore.client
+              client.auths.should_not be_empty
+              client.auths[0]["db_name"].should == 'test_db_auth'
+              client.auths[0]["username"].should == 'my_username'
+              client.auths[0]["password"].should == 'password1'
+            ensure
+              client.remove_auth('test_db_auth')
+              DataStore.instance_variable_set(:@client, nil)
+            end
+          end
+
+          it "auth configured to use default database when database unspecified" do
+            begin
+              File.stub(:read).and_return(<<-YML)
+              test:
+                :host: localhost
+                :port: 27017
+                :password: password1
+                :username: my_username
+              YML
+              DataStore.instance_variable_set('@client', nil)
+              client = DataStore.client
+              DataStore._db_name.should == 'curator:test'
+              client.auths.should_not be_empty
+              client.auths[0]["db_name"].should == 'curator:test'
+              client.auths[0]["username"].should == 'my_username'
+              client.auths[0]["password"].should == 'password1'
+            ensure
+              client.remove_auth('curator:test')
+              DataStore.instance_variable_set('@client', nil)
+            end
+          end
+        end
       end
 
       describe "self.save" do
