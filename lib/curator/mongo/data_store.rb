@@ -41,7 +41,7 @@ module Curator
         collection.remove(:_id => id)
       end
 
-      def self.find_by_index(collection_name, field, query)
+      def self.find_by_attribute(collection_name, field, query)
         return [] if query.nil?
 
         exp = {}

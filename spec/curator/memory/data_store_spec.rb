@@ -33,16 +33,16 @@ module Curator::Memory
       it 'deletes indexes for the key' do
         DataStore.save(:collection_name => 'heap', :key => 'some_key', :value => {'k' => 'v'}, :index => {:k => 'v'})
         DataStore.delete('heap', 'some_key')
-        DataStore.find_by_index('heap', :k, 'v').should be_empty
+        DataStore.find_by_attribute('heap', :k, 'v').should be_empty
       end
     end
 
-    describe 'self.find_by_index' do
+    describe 'self.find_by_attribute' do
       it 'returns objects with an indexed number value in a range' do
         DataStore.save(:collection_name => 'test_collection', :key => 'key1', :value => {:indexed_key => 1}, :index => {:indexed_key => 1})
         DataStore.save(:collection_name => 'test_collection', :key => 'key2', :value => {:indexed_key => 5}, :index => {:indexed_key => 5})
 
-        keys = DataStore.find_by_index('test_collection', :indexed_key, 0..2).map { |data| data[:key] }
+        keys = DataStore.find_by_attribute('test_collection', :indexed_key, 0..2).map { |data| data[:key] }
         keys.sort.should == ['key1']
       end
 
@@ -51,15 +51,15 @@ module Curator::Memory
         DataStore.save(:collection_name => 'test_collection', :key => 'key2', :value => {:indexed_key => 3.days.ago}, :index => {:indexed_key => 3.days.ago})
 
         range = (11.hours.from_now.utc..15.hours.from_now.utc)
-        keys = DataStore.find_by_index('test_collection', :indexed_key, range).map { |data| data[:key] }
+        keys = DataStore.find_by_attribute('test_collection', :indexed_key, range).map { |data| data[:key] }
         keys.sort.should == []
 
         range = (15.minutes.ago.utc..5.minutes.from_now.utc)
-        keys = DataStore.find_by_index('test_collection', :indexed_key, range).map { |data| data[:key] }
+        keys = DataStore.find_by_attribute('test_collection', :indexed_key, range).map { |data| data[:key] }
         keys.sort.should == ['key1']
 
         range = (10.days.ago.utc..4.days.from_now.utc)
-        keys = DataStore.find_by_index('test_collection', :indexed_key, range).map { |data| data[:key] }
+        keys = DataStore.find_by_attribute('test_collection', :indexed_key, range).map { |data| data[:key] }
         keys.sort.should == ['key1', 'key2']
       end
     end

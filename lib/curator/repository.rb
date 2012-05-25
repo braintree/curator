@@ -34,15 +34,15 @@ module Curator
       end
 
       def find_by_created_at(start_time, end_time)
-        _find_by_index(collection_name, :created_at, _format_time_for_index(start_time).._format_time_for_index(end_time))
+        _find_by_attribute(:created_at, _format_time_for_index(start_time).._format_time_for_index(end_time))
       end
 
       def find_by_updated_at(start_time, end_time)
-        _find_by_index(collection_name, :updated_at, _format_time_for_index(start_time).._format_time_for_index(end_time))
+        _find_by_attribute(:updated_at, _format_time_for_index(start_time).._format_time_for_index(end_time))
       end
 
       def find_by_version(version)
-        _find_by_index(collection_name, :version, version)
+        _find_by_attribute(:version, version)
       end
 
       def find_by_id(id)
@@ -93,20 +93,20 @@ module Curator
         object.instance_values
       end
 
-      def _build_finder_methods(field_name)
+      def _build_finder_methods(attribute)
         eigenclass = class << self; self; end
         eigenclass.class_eval do
-          define_method("find_by_#{field_name}") do |value|
-            _find_by_index(collection_name, field_name, value)
+          define_method("find_by_#{attribute}") do |value|
+            _find_by_attribute(attribute, value)
           end
-          define_method("find_first_by_#{field_name}") do |value|
-            _find_by_index(collection_name, field_name, value).first
+          define_method("find_first_by_#{attribute}") do |value|
+            _find_by_attribute(attribute, value).first
           end
         end
       end
 
-      def _find_by_index(collection_name, field_name, value)
-        if results = data_store.find_by_index(collection_name, field_name, value)
+      def _find_by_attribute(attribute, value)
+        if results = data_store.find_by_attribute(collection_name, attribute, value)
           results.map do |hash|
             _deserialize(hash[:key], hash[:data])
           end
