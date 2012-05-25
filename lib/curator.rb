@@ -21,7 +21,7 @@ module Curator
   end
 
   def self.data_store
-    config.data_store
+    @data_store ||= config.data_store
   end
 
   self.configure(:riak) do |config|

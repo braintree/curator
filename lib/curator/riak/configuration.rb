@@ -11,7 +11,7 @@ module Curator::Riak
     end
 
     def data_store
-      Curator::Riak::DataStore
+      Curator::Riak::DataStore.new
     end
   end
 end
