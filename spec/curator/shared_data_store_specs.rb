@@ -8,20 +8,20 @@ shared_examples "data_store" do |data_store|
     end
   end
 
-  describe "self.find_by_index" do
+  describe "self.find_by_attribute" do
     it "returns an empty array if key is not found" do
-      data_store.find_by_index("abyss","invalid_index","invalid_key").should be_empty
+      data_store.find_by_attribute("abyss","invalid_index","invalid_key").should be_empty
     end
 
     it "returns an empty array if key is nil" do
-      data_store.find_by_index("abyss","invalid_index", nil).should be_empty
+      data_store.find_by_attribute("abyss","invalid_index", nil).should be_empty
     end
 
     it "returns multiple objects" do
       data_store.save(:collection_name => "test_collection", :key => "key1", :value => {:indexed_key => "indexed_value"}, :index => {:indexed_key => "indexed_value"})
       data_store.save(:collection_name => "test_collection", :key => "key2", :value => {:indexed_key => "indexed_value"}, :index => {:indexed_key => "indexed_value"})
 
-      keys = data_store.find_by_index("test_collection", :indexed_key, "indexed_value").map { |data| data[:key] }
+      keys = data_store.find_by_attribute("test_collection", :indexed_key, "indexed_value").map { |data| data[:key] }
       keys.sort.should == ["key1", "key2"]
     end
 
@@ -29,15 +29,15 @@ shared_examples "data_store" do |data_store|
       data_store.save(:collection_name => "test_collection",  :key => "key1", :value => {:indexed_key => 'e'}, :index => {:indexed_key => 'e'})
       data_store.save(:collection_name => "test_collection",  :key => "key2", :value => {:indexed_key => 'g'}, :index => {:indexed_key => 'g'})
 
-      data_store.find_by_index("test_collection", :indexed_key, ('a'..'f')).map { |data| data[:key] }.should == ["key1"]
-      data_store.find_by_index("test_collection", :indexed_key, ('f'..'h')).map { |data| data[:key] }.should == ["key2"]
-      data_store.find_by_index("test_collection", :indexed_key, ('a'..'h')).map { |data| data[:key] }.sort.should == ["key1", "key2"]
+      data_store.find_by_attribute("test_collection", :indexed_key, ('a'..'f')).map { |data| data[:key] }.should == ["key1"]
+      data_store.find_by_attribute("test_collection", :indexed_key, ('f'..'h')).map { |data| data[:key] }.should == ["key2"]
+      data_store.find_by_attribute("test_collection", :indexed_key, ('a'..'h')).map { |data| data[:key] }.sort.should == ["key1", "key2"]
     end
 
     it "can find objects by index with a key containing a + character" do
       data_store.save(:collection_name => "test_collection", :key => "key1", :value => {:indexed_key => "indexed+value"}, :index => {:indexed_key => "indexed+value"})
 
-      keys = data_store.find_by_index("test_collection", :indexed_key, "indexed+value").map { |data| data[:key] }
+      keys = data_store.find_by_attribute("test_collection", :indexed_key, "indexed+value").map { |data| data[:key] }
       keys.sort.should == ["key1"]
     end
 
@@ -49,9 +49,9 @@ shared_examples "data_store" do |data_store|
         :index => {:indexed_key => ["indexed_value1", "indexed_value2"]}
       )
 
-      data_store.find_by_index("test_collection", :indexed_key, "indexed_value1").map { |data| data[:key] }.should == ["key1"]
-      data_store.find_by_index("test_collection", :indexed_key, "indexed_value2").map { |data| data[:key] }.should == ["key1"]
-      data_store.find_by_index("test_collection", :indexed_key, "indexed_value3").map { |data| data[:key] }.should == []
+      data_store.find_by_attribute("test_collection", :indexed_key, "indexed_value1").map { |data| data[:key] }.should == ["key1"]
+      data_store.find_by_attribute("test_collection", :indexed_key, "indexed_value2").map { |data| data[:key] }.should == ["key1"]
+      data_store.find_by_attribute("test_collection", :indexed_key, "indexed_value3").map { |data| data[:key] }.should == []
     end
   end
 
@@ -99,10 +99,10 @@ shared_examples "data_store" do |data_store|
         :index => {:foo => "foo-data", :bar => "bar-data"}
       )
 
-      foo_result = data_store.find_by_index("fake_things", :foo, "foo-data").first
+      foo_result = data_store.find_by_attribute("fake_things", :foo, "foo-data").first
       foo_result[:key].should == "blah"
 
-      bar_result = data_store.find_by_index("fake_things", :bar, "bar-data").first
+      bar_result = data_store.find_by_attribute("fake_things", :bar, "bar-data").first
       bar_result[:key].should == "blah"
     end
   end

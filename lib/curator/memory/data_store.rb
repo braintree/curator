@@ -51,10 +51,10 @@ module Curator
         {:key => key, :data => value}
       end
 
-      def self.find_by_index(collection_name, index_name, query)
+      def self.find_by_attribute(collection_name, attribute, query)
         return [] if query.nil?
         bucket = _bucket_name(collection_name)
-        index = _index(bucket, index_name)
+        index = _index(bucket, attribute)
         keys = case query
                when Range
                  keys = index.keys.select do |key|

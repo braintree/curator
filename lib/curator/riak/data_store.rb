@@ -42,7 +42,7 @@ module Curator
         end
       end
 
-      def self.find_by_index(bucket_name, index_name, query)
+      def self.find_by_attribute(bucket_name, index_name, query)
         return [] if query.nil?
 
         bucket = _bucket(bucket_name)
