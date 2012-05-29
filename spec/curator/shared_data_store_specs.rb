@@ -1,4 +1,4 @@
-shared_examples "data_store" do |data_store|
+shared_examples "data_store" do
   describe "self.delete" do
     it "deletes an object by key" do
       data_store.save(:collection_name => "fake_things", :key => "some_key", :value => {"k" => "v"})

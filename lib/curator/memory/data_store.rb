@@ -3,14 +3,15 @@ require 'ostruct'
 module Curator
   module Memory
     class DataStore
-      def self.remove_all_keys
+      def remove_all_keys
         @data = {}
       end
-      class << self
-        alias :reset! :remove_all_keys
+
+      def reset!
+        remove_all_keys
       end
 
-      def self.save(options)
+      def save(options)
         bucket = _bucket_name(options[:collection_name])
         object = options[:value]
         key = options[:key]
@@ -31,7 +32,7 @@ module Curator
         key
       end
 
-      def self.delete(collection_name, key)
+      def delete(collection_name, key)
         bucket = _bucket_name(collection_name)
         _records(bucket).delete(key)
         _indices(bucket).each_key do |name|
@@ -44,14 +45,14 @@ module Curator
         end
       end
 
-      def self.find_by_key(collection_name, key)
+      def find_by_key(collection_name, key)
         bucket = _bucket_name(collection_name)
         value = _records(bucket).fetch(key, nil)
         return if value.nil?
         {:key => key, :data => value}
       end
 
-      def self.find_by_attribute(collection_name, attribute, query)
+      def find_by_attribute(collection_name, attribute, query)
         return [] if query.nil?
         bucket = _bucket_name(collection_name)
         index = _index(bucket, attribute)
@@ -69,27 +70,27 @@ module Curator
         end
       end
 
-      def self._data
+      def _data
         @data ||= {}
       end
 
-      def self._bucket(bucket)
+      def _bucket(bucket)
         _data[bucket] ||= {}
       end
 
-      def self._records(bucket)
+      def _records(bucket)
         _bucket(bucket)[:records] ||= {}
       end
 
-      def self._indices(bucket)
+      def _indices(bucket)
         _bucket(bucket)[:indices] ||= {}
       end
 
-      def self._index(bucket, index_name)
+      def _index(bucket, index_name)
         _indices(bucket)[index_name] ||= {}
       end
 
-      def self._normalized_index_values(indexed_data)
+      def _normalized_index_values(indexed_data)
         if indexed_data.is_a?(Array)
           indexed_data
         else
@@ -97,13 +98,13 @@ module Curator
         end
       end
 
-      def self._generate_key(bucket)
+      def _generate_key(bucket)
         keys = _records(bucket).keys
         keys = [0] if keys.empty?
         keys.max.next
       end
 
-      def self._bucket_name(name)
+      def _bucket_name(name)
         "#{Curator.config.environment}:#{name}"
       end
     end
