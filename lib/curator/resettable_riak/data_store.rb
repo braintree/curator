@@ -1,3 +1,4 @@
+require File.expand_path(File.dirname(__FILE__) + '/../riak/data_store')
 require 'active_support/core_ext/kernel/reporting'
 
 module Curator

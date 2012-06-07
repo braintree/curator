@@ -23,11 +23,4 @@ module Curator
   def self.data_store
     @data_store ||= config.data_store
   end
-
-  self.configure(:riak) do |config|
-    config.environment = 'development'
-    config.migrations_path = File.expand_path(File.dirname(__FILE__) + "/../db/migrate")
-    config.bucket_prefix = 'curator'
-    config.riak_config_file = File.expand_path(File.dirname(__FILE__) + "/../config/riak.yml")
-  end
 end
