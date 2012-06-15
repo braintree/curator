@@ -61,10 +61,6 @@ module Curator
         _db.collection(name)
       end
 
-      def _collection_name(name)
-        _db.collection(name).name
-      end
-
       def _db
         client.db(_db_name)
       end
