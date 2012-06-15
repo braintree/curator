@@ -45,9 +45,12 @@ end
 def with_config(&block)
   around(:each) do |example|
     old_config = Curator.config
+    old_data_store = Curator.data_store
+    Curator.instance_variable_set('@data_store', nil)
     block.call
     example.run
     Curator.instance_variable_set('@config', old_config)
+    Curator.instance_variable_set('@data_store', old_data_store)
   end
 end
 

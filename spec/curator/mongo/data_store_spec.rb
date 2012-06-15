@@ -113,6 +113,11 @@ module Curator
           data_store.save(:collection_name => 'fake_things', :key => 1, :value => {:foo => "bar"})
           data_store.client.db(data_store._db_name).collection('fake_things').find_one({'_id' => 1}).should == {"_id" => 1, "foo" => "bar"}
         end
+
+        it "generates the key as an ObjectId if no key is specified" do
+          key = data_store.save(:collection_name => 'fake_things', :value => {:foo => "bar"})
+          key.should be_a(BSON::ObjectId)
+        end
       end
 
       describe "self._db_name" do

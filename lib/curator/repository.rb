@@ -121,8 +121,6 @@ module Curator
         attributes = data.with_indifferent_access
         migrated_attributes = migrator.migrate(attributes)
         migrated_attributes[:id] = id
-        migrated_attributes[:created_at] = Time.parse(migrated_attributes[:created_at]) if migrated_attributes[:created_at]
-        migrated_attributes[:updated_at] = Time.parse(migrated_attributes[:updated_at]) if migrated_attributes[:updated_at]
         deserialize(migrated_attributes)
       end
 
