@@ -69,6 +69,11 @@ shared_examples "data_store" do
       data_store.save(:collection_name => "fake_things", :key => "special+key", :value => {"k" => "v"})
       data_store.find_by_key("fake_things", "special+key").should == {:key => "special+key", :data => {"k" => "v"}}
     end
+
+    it "can find by a generated key" do
+      key = data_store.save(:collection_name => "fake_things", :value => {"k" => "v"})
+      data_store.find_by_key("fake_things", key).should == {:key => key, :data => {"k" => "v"}}
+    end
   end
 
   describe "self.save" do
