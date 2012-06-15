@@ -181,7 +181,15 @@ end
 
 Curator stores objects in the data store using the id as the key. The value is a json representation of the instance_values of the object. Your repository can implement serialize/deserialize to get different behavior.
 
+### Riak
+
 The bucket name in Riak is `<bucket_prefix>:<environment>:<collection>`. The bucket prefix is configurable. By default, it will either be `curator` or the name of the Rails application if you are using curator within Rails. The collection is derived from the name of the Repository class, and it can be overriden. For example, if you implement a NoteRepository, the riak bucket will be `curator:development:notes` in development mode, and `curator:production:notes` in production mode.
+
+### MongoDB
+
+The collection name in MongoDB is derived from the name of the Repository class, and it can be overriden. For example, if you implement a NoteRepository, the collection name will be `notes`.
+
+MongoDB will preserve the types of attributes. For example, if you set an attribute as a `Time` object, it will come back as a `Time` object. If you do not set a key for an object, MongoDB will generate one as a `BSON::ObjectId`, which will be returned. If you want to `find_by_id`, you will have to use the `BSON::ObjectId` class, not a `String`. On the other hand, if you specify keys as strings, you can look them back up as strings.
 
 ## Contributing
 
