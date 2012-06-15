@@ -10,6 +10,10 @@ module Curator
         @client = ::Riak::Client.new(yml_config)
       end
 
+      def bucket_prefix
+        "#{Curator.config.bucket_prefix}:#{Curator.config.environment}"
+      end
+
       def delete(bucket_name, key)
         bucket = _bucket(bucket_name)
         object = bucket.get(key)
@@ -36,7 +40,7 @@ module Curator
         bucket = _bucket(bucket_name)
         begin
           object = bucket.get(key)
-          { :key => object.key, :data => object.data } unless object.data.empty?
+          { :key => object.key, :data => _deserialize(object.data) } unless object.data.empty?
         rescue ::Riak::HTTPFailedRequest => failed_request
           raise failed_request unless failed_request.not_found?
         end
@@ -62,8 +66,11 @@ module Curator
         bucket_prefix + ":" + name
       end
 
-      def bucket_prefix
-        "#{Curator.config.bucket_prefix}:#{Curator.config.environment}"
+      def _deserialize(data)
+        deserialized_data = data.dup
+        deserialized_data["created_at"] = Time.parse(data["created_at"]) if data["created_at"]
+        deserialized_data["updated_at"] = Time.parse(data["updated_at"]) if data["updated_at"]
+        deserialized_data
       end
 
       def _find_key_by_index(bucket, index_name, query)
