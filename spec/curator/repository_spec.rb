@@ -109,6 +109,38 @@ describe Curator::Repository do
         TestModelRepository.find_by_multiple_values("third").should == []
       end
 
+      it "can index a ruby Set serialized as an array" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+          attr_reader :id, :multiple_values
+          indexed_fields :multiple_values
+
+          def self.serialize(model)
+            super.tap do |attributes|
+              attributes["multiple_values"] = model.multiple_values.to_a
+            end
+          end
+
+        end
+
+        def_transient_class(:TestModel) do
+          include Curator::Model
+          attr_reader :id, :multiple_values
+
+          def initialize(args={})
+            args.each {|k,v| instance_variable_set "@#{k}", v}
+            @multiple_values = Set.new(args[:multiple_values])
+          end
+        end
+
+        model = TestModel.new(:multiple_values => ["first", "second"])
+        TestModelRepository.save(model)
+
+        TestModelRepository.find_by_multiple_values("first").should == [model]
+        TestModelRepository.find_by_multiple_values("second").should == [model]
+        TestModelRepository.find_by_multiple_values("third").should == []
+      end
+
       it "indexes created_at and updated_at by default" do
         def_transient_class(:TestModelRepository) do
           include Curator::Repository

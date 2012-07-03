@@ -133,7 +133,7 @@ module Curator
       end
 
       def _indexes(object)
-        index_values = _indexed_fields.map { |field| [field, object.send(field)] }
+        index_values = _indexed_fields.map { |field| [field, _serialize(object)[field.to_s]] }
         index_values += [
           [:created_at, _format_time_for_index(object.send(:created_at))],
           [:updated_at, _format_time_for_index(object.send(:updated_at))],
