@@ -90,7 +90,7 @@ module Curator
       end
 
       def serialize(object)
-        object.instance_values
+        HashWithIndifferentAccess.new(object.instance_values)
       end
 
       def _build_finder_methods(attribute)
@@ -133,7 +133,7 @@ module Curator
       end
 
       def _indexes(object)
-        index_values = _indexed_fields.map { |field| [field, _serialize(object)[field.to_s]] }
+        index_values = _indexed_fields.map { |field| [field, serialize(object)[field.to_sym]] }
         index_values += [
           [:created_at, _format_time_for_index(object.send(:created_at))],
           [:updated_at, _format_time_for_index(object.send(:updated_at))],

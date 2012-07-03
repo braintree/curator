@@ -117,7 +117,7 @@ describe Curator::Repository do
 
           def self.serialize(model)
             super.tap do |attributes|
-              attributes["multiple_values"] = model.multiple_values.to_a
+              attributes[:multiple_values] = model.multiple_values.to_a
             end
           end
 
