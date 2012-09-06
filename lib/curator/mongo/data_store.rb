@@ -7,6 +7,8 @@ module Curator
       def client
         return @client if @client
         config = YAML.load(File.read(Curator.config.mongo_config_file))[Curator.config.environment]
+        config = config.symbolize_keys
+
         host = config.delete(:host)
         port = config.delete(:port)
         password = config.delete(:password)
