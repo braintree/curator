@@ -45,6 +45,14 @@ module Curator
         end
       end
 
+      def find_all(collection_name)
+        bucket = _bucket_name(collection_name)
+        _records(bucket).inject([]) do |results, (key,value)|
+          results << {:key => key, :data => value}
+          results
+        end
+      end
+
       def find_by_key(collection_name, key)
         bucket = _bucket_name(collection_name)
         value = _records(bucket).fetch(key, nil)

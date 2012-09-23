@@ -8,6 +8,7 @@ module Curator::Riak
 
     def initialize
       ::Riak.escaper = CGI
+      ::Riak.disable_list_keys_warnings = true
     end
 
     def data_store

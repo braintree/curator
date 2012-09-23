@@ -8,6 +8,14 @@ shared_examples "data_store" do
     end
   end
 
+  describe "self.find_all" do
+    it "returns all data for the given collection" do
+      data_store.save(:collection_name => "test_collection", :key => "key1", :value => {:some_key => "some_value"})
+      data_store.save(:collection_name => "test_collection", :key => "key2", :value => {:some_key => "some_value2"})
+      data_store.find_all("test_collection").map { |h| h[:key] }.sort.should == %w[key1 key2]
+    end
+  end
+
   describe "self.find_by_attribute" do
     it "returns an empty array if key is not found" do
       data_store.find_by_attribute("abyss","invalid_index","invalid_key").should be_empty

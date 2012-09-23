@@ -36,6 +36,11 @@ module Curator
         result.key
       end
 
+      def find_all(bucket_name)
+        bucket = _bucket(bucket_name)
+        bucket.keys.map { |key| find_by_key(bucket_name, key) }
+      end
+
       def find_by_key(bucket_name, key)
         bucket = _bucket(bucket_name)
         begin

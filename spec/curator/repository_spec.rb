@@ -52,6 +52,26 @@ describe Curator::Repository do
       end
     end
 
+    describe "all" do
+      it "finds all" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+          attr_reader :id, :some_field
+          indexed_fields :some_field
+        end
+
+        def_transient_class(:TestModel) do
+          include Curator::Model
+          attr_reader :id, :some_field
+        end
+
+        TestModelRepository.save(TestModel.new(:some_field => "Some Value 1"))
+        TestModelRepository.save(TestModel.new(:some_field => "Some Value 2"))
+
+        TestModelRepository.all.map(&:some_field).sort.should == ["Some Value 1", "Some Value 2"]
+      end
+    end
+
     describe "indexed_fields" do
       it "adds find methods for the indexed fields" do
         def_transient_class(:TestModelRepository) do

@@ -43,6 +43,12 @@ module Curator
         collection.remove(:_id => id)
       end
 
+      def find_all(collection_name)
+        collection = _collection(collection_name)
+        documents = collection.find
+        documents.map {|doc| normalize_document(doc) }
+      end
+
       def find_by_attribute(collection_name, field, query)
         return [] if query.nil?
 

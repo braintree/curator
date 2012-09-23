@@ -8,6 +8,12 @@ module Curator
     extend ActiveSupport::Concern
 
     module ClassMethods
+      def all
+        data_store.find_all(collection_name).map do |result|
+          _deserialize(result[:key], result[:data])
+        end
+      end
+
       def collection(explicit_collection_name)
         @collection_name = explicit_collection_name
       end
