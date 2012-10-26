@@ -61,8 +61,18 @@ module Curator
 
       def find_by_key(collection_name, id)
         collection = _collection(collection_name)
-        document = collection.find_one({:_id => id})
+        document = _find_by_key_as_provided(collection, id) || _find_by_key_as_object_id(collection, id)
         normalize_document(document) unless document.nil?
+      end
+
+      def _find_by_key_as_provided(collection, id)
+        collection.find_one(:_id => id)
+      end
+
+      def _find_by_key_as_object_id(collection, id)
+        if BSON::ObjectId.legal?(id)
+          collection.find_one(:_id => BSON::ObjectId.from_string(id))
+        end
       end
 
       def _collection(name)

@@ -108,6 +108,13 @@ module Curator
         end
       end
 
+      describe "find_by_key" do
+        it "can find by a generated key as a string" do
+          key = data_store.save(:collection_name => "fake_things", :value => {"k" => "v"})
+          data_store.find_by_key("fake_things", key.to_s).should == {:key => key, :data => {"k" => "v"}}
+        end
+      end
+
       describe "self.save" do
         it "stores document with _id attribute in mongo" do
           data_store.save(:collection_name => 'fake_things', :key => 1, :value => {:foo => "bar"})
