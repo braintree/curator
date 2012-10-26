@@ -44,7 +44,29 @@ note2 = NoteRepository.find_first_by_user_id("my_user")
 my_notes = NoteRepository.find_by_user_id("my_user")
 ```
 
-Fields included in indexed_fields automatically get a secondary index when persisted to Riak.
+Fields included in `indexed_fields` are indexed in both Riak and MongoDB when persisted.
+
+As persistence gets more complicated, repositories can implement their own serialize and deserialize methods to handle any case. For example, if our note contained a PDF, the repository might look like:
+
+```ruby
+class NoteRepository
+  include Curator::Repository
+
+  indexed_fields :user_id
+
+  def self.serialize(note)
+    attributes = super(note)
+    attributes[:pdf] = Base64.encode64(note.pdf) if note.pdf
+    attributes
+  end
+
+  def self.deserialize(attributes)
+    note = super(attributes)
+    note.pdf = Base64.decode64(attributes[:pdf]) if attributes[:pdf]
+    note
+  end
+end
+```
 
 ### Rails
 
