@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'curator'
-  s.version     = '0.8.1'
+  s.version     = '0.9.0'
   s.summary     = "Model and repository framework"
   s.description = "Model and repository framework"
   s.authors     = ["Braintree"]
