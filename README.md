@@ -1,4 +1,4 @@
-# Curator [![Build Status](https://secure.travis-ci.org/braintree/curator.png)](http://travis-ci.org/braintree/curator)
+# Curator
 
 See [Untangle Domain and Persistence Logic with Curator](http://www.braintreepayments.com/devblog/untangle-domain-and-persistence-logic-with-curator) for the announcement blog post.
 
