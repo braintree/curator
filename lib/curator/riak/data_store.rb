@@ -6,6 +6,8 @@ module Curator
     class DataStore
       def client
         return @client if @client
+        return @client = Curator.config.client if Curator.config.client
+
         yml_config = YAML.load(File.read(Curator.config.riak_config_file))[Curator.config.environment]
         @client = ::Riak::Client.new(yml_config)
       end

@@ -20,6 +20,20 @@ module Curator
       end
 
       describe "self.client" do
+        context "with a client manually configured" do
+          with_config do
+            Curator.configure(:mongo) do |config|
+              config.environment = "test"
+              config.client      = ::Mongo::Connection.new
+              config.database    = "curator"
+            end
+          end
+
+          it "should return the client and not use the yaml file" do
+            data_store.client.should == Curator.config.client
+          end
+        end
+
         it "returns a mongo client with a config read from the yml file provided" do
           begin
             File.stub(:read).and_return(<<-YML)

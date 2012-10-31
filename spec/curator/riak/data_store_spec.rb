@@ -9,6 +9,19 @@ module Curator
       let(:data_store) { DataStore.new }
 
       describe "self.client" do
+        context "with a client manually configured" do
+          with_config do
+            Curator.configure(:resettable_riak) do |config|
+              config.environment = "test"
+              config.client      = ::Riak::Client.new
+            end
+          end
+
+          it "should return the client and not use the yaml file" do
+            data_store.client.should == Curator.config.client
+          end
+        end
+
         it "returns a riak client with a config read from the yml file provided" do
           begin
             File.should_receive(:read).and_return(<<-YML)

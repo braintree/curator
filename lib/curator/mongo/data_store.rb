@@ -6,6 +6,13 @@ module Curator
     class DataStore
       def client
         return @client if @client
+
+        if Curator.config.client
+          @client        = Curator.config.client
+          @database_name = Curator.config.database
+          return @client
+        end
+
         config = YAML.load(File.read(Curator.config.mongo_config_file))[Curator.config.environment]
         config = config.symbolize_keys
 
