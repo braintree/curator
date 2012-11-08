@@ -117,6 +117,17 @@ Curator.configure(:riak) do |config|
 end
 ```
 
+Alternatively, instead of using a YAML file to configure the client you can set it manually.
+
+```ruby
+Curator.configure(:riak) do |config|
+  config.bucket_prefix = "my_app"
+  config.environment = "development"
+  config.migrations_path = File.expand_path(File.dirname(__FILE__) + "/../db/migrate")
+  config.client = Riak::Client.new
+end
+```
+
 ## Testing
 
 If you are writing tests using curator, it's likely that you will want a way to clean up your data in Riak between tests. Riak does not provide an easy way to clear out all data, so curator takes care of it for you. You can use the following methods if you change your backend from `:riak` to `:resettable_riak`:

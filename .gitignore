@@ -1,2 +1,4 @@
 /tags
 *.gem
+.bundle
+vendor
