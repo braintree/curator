@@ -18,8 +18,8 @@ module Curator
 
         host = config.delete(:host)
         port = config.delete(:port)
-        password = config.delete(:password)
-        username = config.delete(:username)
+        password = ENV['MONGO_PASSWORD'] || config.delete(:password)
+        username = ENV['MONGO_USERNAME'] || config.delete(:username)
         @database_name = config.delete(:database) || default_db_name
         @client = ::Mongo::Connection.new(host, port, config)
         @client.add_auth(@database_name, username, password) if username and password

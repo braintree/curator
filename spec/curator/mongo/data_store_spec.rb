@@ -119,6 +119,28 @@ module Curator
               data_store.instance_variable_set('@client', nil)
             end
           end
+
+          it "auth configured via environment variables" do
+            begin
+              ENV['MONGO_USERNAME'] = 'my_username'
+              ENV['MONGO_PASSWORD'] = 'password1'
+              File.stub(:read).and_return(<<-YML)
+              test:
+                :host: localhost
+                :port: 27017
+              YML
+              data_store.instance_variable_set('@client', nil)
+              client = data_store.client
+              client.auths.should_not be_empty
+              client.auths[0]["username"].should == 'my_username'
+              client.auths[0]["password"].should == 'password1'
+            ensure
+              ENV['MONGO_USERNAME'] = nil
+              ENV['MONGO_PASSWORD'] = nil
+              client.remove_auth('curator:test')
+              data_store.instance_variable_set('@client', nil)
+            end
+          end
         end
       end
 
