@@ -13,6 +13,14 @@ module Curator
           return @client
         end
 
+        if ENV['MONGO_URI']
+          require 'uri'
+          uri = URI.parse(ENV['MONGO_URI'])
+          @database_name = uri.path.gsub(/^\//, '')
+          @client = ::Mongo::Connection.from_uri(uri.to_s)
+          return @client
+        end
+
         config = YAML.load(File.read(Curator.config.mongo_config_file))[Curator.config.environment]
         config = config.symbolize_keys
 

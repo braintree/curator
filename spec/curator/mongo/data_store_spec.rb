@@ -141,6 +141,30 @@ module Curator
               data_store.instance_variable_set('@client', nil)
             end
           end
+
+          it "entire client and database configured by environment variable" do
+            begin
+              ENV['MONGO_URI'] = 'mongodb://my_username:password1@localhost:27017/test_db_auth'
+              File.stub(:read).and_return(<<-YML)
+              test:
+                :host: mongo.braintree.com
+                :port: 12345
+              YML
+              data_store.instance_variable_set('@client', nil)
+              client = data_store.client
+              client.host.should == 'localhost'
+              client.port.should == 27017
+              data_store._db_name.should == 'test_db_auth'
+              client.auths.should_not be_empty
+              client.auths[0]["db_name"].should == 'test_db_auth'
+              client.auths[0]["username"].should == 'my_username'
+              client.auths[0]["password"].should == 'password1'
+            ensure
+              client.remove_auth('test_db_auth')
+              ENV['MONGO_URI'] = nil
+              data_store.instance_variable_set('@client', nil)
+            end
+          end
         end
       end
 
