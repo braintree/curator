@@ -32,7 +32,7 @@ module Curator
         object.content_type = options.fetch(:content_type, "application/json")
         object.data = options[:value]
         options.fetch(:index, {}).each do |index_name, index_data|
-          object.indexes["#{index_name}_bin"] << _normalized_index_data(index_data)
+          object.indexes["#{index_name}_bin"].merge(Array(index_data))
         end
         result = object.store
         result.key
@@ -82,14 +82,6 @@ module Curator
 
       def _find_key_by_index(bucket, index_name, query)
         bucket.get_index("#{index_name}_bin", query)
-      end
-
-      def _normalized_index_data(index_data)
-        if index_data.is_a?(Array)
-          index_data.join(", ")
-        else
-          index_data
-        end
       end
     end
   end
