@@ -48,7 +48,7 @@ module Curator
         begin
           object = bucket.get(key)
           { :key => object.key, :data => _deserialize(object.data) } unless object.data.empty?
-        rescue ::Riak::HTTPFailedRequest => failed_request
+        rescue ::Riak::HTTPFailedRequest, ::Riak::ProtobuffsFailedRequest => failed_request
           raise failed_request unless failed_request.not_found?
         end
       end
@@ -60,7 +60,7 @@ module Curator
         begin
           keys = _find_key_by_index(bucket, index_name.to_s, query)
           keys.map { |key| find_by_key(bucket_name, key) }
-        rescue ::Riak::HTTPFailedRequest => failed_request
+        rescue ::Riak::HTTPFailedRequest, ::Riak::ProtobuffsFailedRequest => failed_request
           raise failed_request unless failed_request.not_found?
         end
       end
