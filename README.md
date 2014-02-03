@@ -1,5 +1,6 @@
 # Curator
 
+[![Build Status](https://travis-ci.org/braintree/curator.png?branch=master)](https://travis-ci.org/braintree/curator)
 [![Gem Version](https://badge.fury.io/rb/curator.png)](http://badge.fury.io/rb/curator)
 
 See [Untangle Domain and Persistence Logic with Curator](http://www.braintreepayments.com/devblog/untangle-domain-and-persistence-logic-with-curator) for the announcement blog post.
