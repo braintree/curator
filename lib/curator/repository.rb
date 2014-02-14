@@ -7,6 +7,10 @@ module Curator
   module Repository
     extend ActiveSupport::Concern
 
+    def self.included(klass)
+      Curator.repositories << klass
+    end
+
     module ClassMethods
       def all
         data_store.find_all(collection_name).map do |result|

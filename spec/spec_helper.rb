@@ -20,6 +20,7 @@ RSpec.configure do |config|
 
   config.after(:each) do
     Curator.data_store.reset!
+    Curator.repositories = Set.new
   end
 
   config.around(:each) do |test|

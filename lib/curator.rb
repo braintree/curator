@@ -12,6 +12,14 @@ module Curator
     attr_reader :config
   end
 
+  def self.repositories
+    @repositories ||= Set.new
+  end
+
+  def self.repositories=(repositories)
+    @repositories = repositories
+  end
+
   def self.configure(data_store, &block)
     configuration_path = "curator/#{data_store.to_s}/configuration"
     require configuration_path

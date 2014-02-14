@@ -28,4 +28,10 @@ describe Curator do
       block_config.should equal Curator.config
     end
   end
+
+  describe 'self.repositories' do
+    it 'is empty by default' do
+      Curator.repositories.should be_empty
+    end
+  end
 end

@@ -3,6 +3,15 @@ require 'active_support/core_ext/numeric/time'
 require 'active_support/core_ext/date/calculations'
 
 describe Curator::Repository do
+  it "tracks all repositories" do
+    def_transient_class(:TestModelRepository) do
+      include Curator::Repository
+      attr_reader :id
+    end
+
+    Curator.repositories.should include(TestModelRepository)
+  end
+
   context "with riak" do
     with_config do
       Curator.configure(:resettable_riak) do |config|
