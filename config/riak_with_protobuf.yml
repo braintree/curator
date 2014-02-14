@@ -1,0 +1,4 @@
+test:
+  :protocol: pbc
+  :pb_port: 8087
+  :host: localhost

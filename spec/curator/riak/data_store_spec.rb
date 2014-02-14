@@ -89,6 +89,23 @@ module Curator
           data_store.find_by_key("fake_things", "some_key").should == {:key => "some_key", :data => {"k" => "v"}}
         end
       end
+
+      context "using protocol buffers" do
+        with_config do
+          Curator.configure(:resettable_riak) do |config|
+            config.environment = "test"
+            config.riak_config_file = "config/riak_with_protobuf.yml"
+            config.bucket_prefix = 'curator'
+          end
+        end
+
+        include_examples "data_store"
+
+        it "should configure the client to use protocol buffers" do
+          client = Curator.config.data_store.client
+          client.node.should be_protobuffs
+        end
+      end
     end
   end
 end
