@@ -271,6 +271,90 @@ describe Curator::Repository do
       end
     end
 
+    describe "settings" do
+      it "retrieves the settings for its bucket" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+        end
+
+        def_transient_class(:TestModel) do
+          include Curator::Model
+          attr_reader :id, :some_field
+        end
+
+        TestModelRepository.data_store.should_receive(:settings).with("test_models")
+        TestModelRepository.settings
+      end
+
+      it "allows settings to be set" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+          set :my_property, 123
+        end
+
+        TestModelRepository.settings["my_property"].should == 123
+      end
+
+      it "allows settings to be enabled" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+          enable :my_cool_feature
+        end
+
+        TestModelRepository.settings["my_cool_feature"].should be_true
+      end
+
+      it "allows settings to be disabled" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+          disable :my_cool_feature
+        end
+
+        TestModelRepository.settings["my_cool_feature"].should be_false
+      end
+
+      it "has uncommitted settings when changes detected" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+          disable :my_cool_feature
+        end
+
+        TestModelRepository.should be_settings_uncommitted
+      end
+
+      it "doesn't have uncommitted settings when no changes detected" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+        end
+
+        def_transient_class(:TestModel) do
+          include Curator::Model
+          attr_reader :id, :some_field
+        end
+
+        TestModelRepository.should_not be_settings_uncommitted
+      end
+    end
+
+    describe "apply_settings!" do
+      it "applies pending changes" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+        end
+
+        def_transient_class(:TestModel) do
+          include Curator::Model
+          attr_reader :id, :some_field
+        end
+
+        mock_settings = mock
+        TestModelRepository.stub(:settings).and_return(mock_settings)
+
+        mock_settings.should_receive(:apply!).with(:data_store => TestModelRepository.data_store, :collection_name => "test_models")
+        TestModelRepository.apply_settings!
+      end
+    end
+
     describe "serialization" do
       it "does not persist nil values" do
         def_transient_class(:TestModelRepository) do
