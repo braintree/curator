@@ -26,6 +26,15 @@ module Curator
         client.ping
       end
 
+      def settings(bucket_name)
+        _bucket(bucket_name).props.dup.freeze
+      end
+
+      def update_settings!(bucket_name, updated_settings)
+        return true if updated_settings.empty?
+        _bucket(bucket_name).props = updated_settings
+      end
+
       def save(options)
         bucket = _bucket(options[:collection_name])
         object = ::Riak::RObject.new(bucket, options[:key])

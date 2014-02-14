@@ -8,6 +8,22 @@ module Curator
 
       let(:data_store) { DataStore.new }
 
+      context "collection settings" do
+        it "returns settings" do
+          bucket_props = data_store.settings("test_bucket")
+          bucket_props.keys.should_not be_empty
+        end
+
+        it "sets updated settings" do
+          bucket_props = data_store.settings("test_bucket")
+          expected = !bucket_props["allow_mult"]
+          new_props = {"allow_mult" => expected}
+          data_store.update_settings!("test_bucket", new_props)
+
+          data_store.settings("test_bucket").should include("allow_mult" => expected)
+        end
+      end
+
       describe "self.client" do
         context "with a client manually configured" do
           with_config do
