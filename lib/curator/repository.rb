@@ -1,13 +1,22 @@
 require 'active_support/inflector'
 require 'active_support/core_ext/object/instance_variables'
 require 'active_support/core_ext/hash/indifferent_access'
+require 'active_support/core_ext/module/delegation'
+require 'curator/repository/settings'
 require 'json'
 
 module Curator
   module Repository
     extend ActiveSupport::Concern
 
+    def self.included(klass)
+      Curator.repositories << klass
+    end
+
     module ClassMethods
+      delegate :enable, :disable, :set, :to => :settings
+      delegate :uncommitted?, :to => :settings, :prefix => true
+
       def all
         data_store.find_all(collection_name).map do |result|
           _deserialize(result[:key], result[:data])
@@ -97,6 +106,15 @@ module Curator
 
       def serialize(object)
         HashWithIndifferentAccess.new(object.instance_values)
+      end
+
+      def settings
+        @settings ||= Settings.new(data_store.settings(collection_name))
+      end
+
+      def apply_settings!
+        settings.apply!(:data_store => data_store,
+                        :collection_name => collection_name)
       end
 
       def _build_finder_methods(attribute)

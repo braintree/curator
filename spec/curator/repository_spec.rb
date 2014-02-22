@@ -3,6 +3,15 @@ require 'active_support/core_ext/numeric/time'
 require 'active_support/core_ext/date/calculations'
 
 describe Curator::Repository do
+  it "tracks all repositories" do
+    def_transient_class(:TestModelRepository) do
+      include Curator::Repository
+      attr_reader :id
+    end
+
+    Curator.repositories.should include(TestModelRepository)
+  end
+
   context "with riak" do
     with_config do
       Curator.configure(:resettable_riak) do |config|
@@ -262,6 +271,90 @@ describe Curator::Repository do
       end
     end
 
+    describe "settings" do
+      it "retrieves the settings for its bucket" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+        end
+
+        def_transient_class(:TestModel) do
+          include Curator::Model
+          attr_reader :id, :some_field
+        end
+
+        TestModelRepository.data_store.should_receive(:settings).with("test_models")
+        TestModelRepository.settings
+      end
+
+      it "allows settings to be set" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+          set :my_property, 123
+        end
+
+        TestModelRepository.settings["my_property"].should == 123
+      end
+
+      it "allows settings to be enabled" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+          enable :my_cool_feature
+        end
+
+        TestModelRepository.settings["my_cool_feature"].should be_true
+      end
+
+      it "allows settings to be disabled" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+          disable :my_cool_feature
+        end
+
+        TestModelRepository.settings["my_cool_feature"].should be_false
+      end
+
+      it "has uncommitted settings when changes detected" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+          disable :my_cool_feature
+        end
+
+        TestModelRepository.should be_settings_uncommitted
+      end
+
+      it "doesn't have uncommitted settings when no changes detected" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+        end
+
+        def_transient_class(:TestModel) do
+          include Curator::Model
+          attr_reader :id, :some_field
+        end
+
+        TestModelRepository.should_not be_settings_uncommitted
+      end
+    end
+
+    describe "apply_settings!" do
+      it "applies pending changes" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+        end
+
+        def_transient_class(:TestModel) do
+          include Curator::Model
+          attr_reader :id, :some_field
+        end
+
+        mock_settings = mock
+        TestModelRepository.stub(:settings).and_return(mock_settings)
+
+        mock_settings.should_receive(:apply!).with(:data_store => TestModelRepository.data_store, :collection_name => "test_models")
+        TestModelRepository.apply_settings!
+      end
+    end
+
     describe "serialization" do
       it "does not persist nil values" do
         def_transient_class(:TestModelRepository) do
@@ -432,99 +525,99 @@ describe Curator::Repository do
           found_record = TestModelRepository.find_by_id(model.id)
           found_record.some_field.should == "new value"
           found_record.version.should == 1
-    end
+        end
 
-    it "does not run migrations if version is current" do
-      def_transient_class(:TestModelRepository) do
-        include Curator::Repository
-        attr_reader :id, :some_field
-      end
-
-      def_transient_class(:TestModel) do
-        include Curator::Model
-        attr_accessor :id, :some_field
-      end
-
-      write_migration TestModelRepository.collection_name, "0001_one.rb", <<-END
-          class One < Curator::Migration
-            def migrate(hash)
-              hash.merge("some_field" => "new value")
-            end
+        it "does not run migrations if version is current" do
+          def_transient_class(:TestModelRepository) do
+            include Curator::Repository
+            attr_reader :id, :some_field
           end
-      END
 
-      model = TestModel.new(:some_field => "old value")
-      model.version = 1
+          def_transient_class(:TestModel) do
+            include Curator::Model
+            attr_accessor :id, :some_field
+          end
 
-      TestModelRepository.save(model)
+          write_migration TestModelRepository.collection_name, "0001_one.rb", <<-END
+              class One < Curator::Migration
+                def migrate(hash)
+                  hash.merge("some_field" => "new value")
+                end
+              end
+          END
 
-      found_record = TestModelRepository.find_by_id(model.id)
-      found_record.some_field.should == "old value"
-      found_record.version.should == 1
-end
-    end
-  end
+          model = TestModel.new(:some_field => "old value")
+          model.version = 1
 
-  describe "save" do
-    it "returns the object that was saved" do
-      def_transient_class(:TestModelRepository) do
-        include Curator::Repository
-        attr_reader :id
-      end
+          TestModelRepository.save(model)
 
-      def_transient_class(:TestModel) do
-        include Curator::Model
-        attr_accessor :id
-      end
-
-      model = TestModel.new
-      TestModelRepository.save(model).should == model
-    end
-  end
-
-  describe "save_without_timestamps" do
-    it "does not update updated_at" do
-      def_transient_class(:TestModelRepository) do
-        include Curator::Repository
-        attr_reader :id
-      end
-
-      def_transient_class(:TestModel) do
-        include Curator::Model
-        attr_accessor :id
-      end
-
-      created_time = Time.parse("2012-1-1 12:00 CST")
-      model = TestModel.new
-
-      Timecop.freeze(created_time) do
-        TestModelRepository.save(model)
-      end
-
-      Timecop.freeze(created_time + 1.day) do
-        TestModelRepository.save_without_timestamps(model)
-
-        found_model = TestModelRepository.find_by_id(model.id)
-        found_model.created_at.should == created_time
-        found_model.updated_at.should == created_time
+          found_record = TestModelRepository.find_by_id(model.id)
+          found_record.some_field.should == "old value"
+          found_record.version.should == 1
+        end
       end
     end
 
-    it "returns the object that was saved" do
-      def_transient_class(:TestModelRepository) do
-        include Curator::Repository
-        attr_reader :id
-      end
+    describe "save" do
+      it "returns the object that was saved" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+          attr_reader :id
+        end
 
-      def_transient_class(:TestModel) do
-        include Curator::Model
-        attr_accessor :id
-      end
+        def_transient_class(:TestModel) do
+          include Curator::Model
+          attr_accessor :id
+        end
 
-      model = TestModel.new
-      TestModelRepository.save_without_timestamps(model).should == model
+        model = TestModel.new
+        TestModelRepository.save(model).should == model
+      end
     end
-  end
+
+    describe "save_without_timestamps" do
+      it "does not update updated_at" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+          attr_reader :id
+        end
+
+        def_transient_class(:TestModel) do
+          include Curator::Model
+          attr_accessor :id
+        end
+
+        created_time = Time.parse("2012-1-1 12:00 CST")
+        model = TestModel.new
+
+        Timecop.freeze(created_time) do
+          TestModelRepository.save(model)
+        end
+
+        Timecop.freeze(created_time + 1.day) do
+          TestModelRepository.save_without_timestamps(model)
+
+          found_model = TestModelRepository.find_by_id(model.id)
+          found_model.created_at.should == created_time
+          found_model.updated_at.should == created_time
+        end
+      end
+
+      it "returns the object that was saved" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+          attr_reader :id
+        end
+
+        def_transient_class(:TestModel) do
+          include Curator::Model
+          attr_accessor :id
+        end
+
+        model = TestModel.new
+        TestModelRepository.save_without_timestamps(model).should == model
+      end
+    end
   end
 
   context "with mongodb" do

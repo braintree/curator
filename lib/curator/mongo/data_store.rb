@@ -34,6 +34,14 @@ module Curator
         @client
       end
 
+      def settings(collection_name)
+        raise StandardError, "Not implemented yet"
+      end
+
+      def update_settings!(collection_name, updated_settings)
+        raise StandardError, "Not implemented yet"
+      end
+
       def remove_all_keys
         self.reset!
       end

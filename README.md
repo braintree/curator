@@ -213,6 +213,35 @@ describe UpdateDescription do
 end
 ```
 
+## Repository configuration
+Repositories allow their default collection properties to be configured through a syntax similar to [Sinatra's configuration interface](http://www.sinatrarb.com/configuration.html).  Configurable properties are data store specific and currently Riak is the only supported default-overridable data store.
+
+The methods used to configure the Repository are `set`, `enable`, and `disable`:
+
+```ruby
+class NoteRepository
+  include Curator::Repository
+
+  set :n_val, 5
+  enable :allow_mult
+  disable :last_write_wins
+end
+```
+
+For more information on the properties that can be configured for Riak buckets, [see this documentation](http://docs.basho.com/riak/latest/theory/concepts/Buckets/).
+
+### Applying the configuration
+Repository configuration is not applied automatically.  To apply the uncommitted properties, run the `curator:repository:apply` rake task:
+
+```sh
+$ rake curator:repository:apply
+[Curator] Preparing to apply settings to all repositories...
+ * Updating settings for NoteRepository... Done!
+[Curator] Done!
+```
+
+To manually apply uncommitted properties to a specific repository, use `NoteRepository.apply_settings!` in an irb or Rails console session.
+
 ## Under the hood
 
 Curator stores objects in the data store using the id as the key. The value is a json representation of the instance_values of the object. Your repository can implement serialize/deserialize to get different behavior.

@@ -8,5 +8,10 @@ module Curator
         config.riak_config_file = Rails.root.join('config', 'riak.yml')
       end
     end
+
+    rake_tasks do
+      tasks = Dir[File.join(File.dirname(__FILE__),'tasks/*.rake')]
+      tasks.each { |f| load f }
+    end
   end
 end
