@@ -6,6 +6,7 @@ Gem::Specification.new do |s|
   s.authors     = ["Braintree"]
   s.email       = 'code@getbraintree.com'
   s.homepage    = "http://github.com/braintree/curator"
+  s.licenses    = ["MIT"]
   s.files       = Dir.glob("lib/**/*.rb")
 
   s.add_dependency('activesupport', '>= 3.0.0')
