@@ -16,6 +16,16 @@ module Curator::Memory
       end
     end
 
+    context "collection settings" do
+      it "returns empty settings" do
+        data_store.settings("test_bucket").should be_empty
+      end
+
+      it "update_settings does nothing" do
+        data_store.update_settings!("test_bucket", {})
+      end
+    end
+
     describe 'self.remove_all_keys' do
       it 'clears the data set' do
         data_store._data[:foo] = 1

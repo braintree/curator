@@ -3,6 +3,15 @@ require 'ostruct'
 module Curator
   module Memory
     class DataStore
+
+      def settings(bucket_name)
+        {}
+      end
+
+      def update_settings!(collection_name, updated_settings)
+        # NOOP
+      end
+
       def remove_all_keys
         @data = {}
       end
