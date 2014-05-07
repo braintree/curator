@@ -230,6 +230,22 @@ describe Curator::Repository do
 
         TestModelRepository.find_by_some_field("Doesn't exist").should == []
       end
+
+      it "returns empty array if data store returns an array with a nil element" do
+        def_transient_class(:TestModelRepository) do
+          include Curator::Repository
+          attr_reader :id, :some_field
+          indexed_fields :some_field
+        end
+
+        def_transient_class(:TestModel) do
+          include Curator::Model
+          attr_reader :id, :some_field
+        end
+
+        TestModelRepository.data_store.stub(:find_by_attribute).and_return([nil])
+        TestModelRepository.find_by_some_field("Doesn't exist").should == []
+      end
     end
 
     context "find_first_by_index" do

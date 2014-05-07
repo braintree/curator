@@ -132,8 +132,8 @@ module Curator
       def _find_by_attribute(attribute, value)
         if results = data_store.find_by_attribute(collection_name, attribute, value)
           results.map do |hash|
-            _deserialize(hash[:key], hash[:data])
-          end
+            _deserialize(hash[:key], hash[:data]) if hash
+          end.compact
         end
       end
 
