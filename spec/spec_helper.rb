@@ -6,20 +6,13 @@ require 'ammeter/init'
 
 TMP_PATH = File.expand_path(File.dirname(__FILE__) + '/../tmp')
 
-Curator.configure(:resettable_riak) do |config|
-  config.environment = "test"
+Curator.configure(:memory) do |config|
+  config.environment = 'test'
   config.migrations_path = "/tmp/curator_migrations"
-  config.bucket_prefix = 'curator'
-  config.riak_config_file = File.expand_path(File.dirname(__FILE__) + "/../config/riak.yml")
 end
 
 RSpec.configure do |config|
-  config.before(:suite) do
-    Curator.data_store.remove_all_keys
-  end
-
   config.after(:each) do
-    Curator.data_store.reset!
     Curator.repositories = Set.new
   end
 
@@ -50,8 +43,10 @@ def with_config(&block)
     Curator.instance_variable_set('@data_store', nil)
     block.call
     example.run
+    Curator.data_store.reset!
     Curator.instance_variable_set('@config', old_config)
     Curator.instance_variable_set('@data_store', old_data_store)
+    Curator.repositories = Set.new
   end
 end
 

@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'curator/riak/data_store'
 require 'curator/shared_data_store_specs'
 
 module Curator
@@ -7,6 +8,15 @@ module Curator
       include_examples "data_store"
 
       let(:data_store) { DataStore.new }
+
+      with_config do
+        Curator.configure(:resettable_riak) do |config|
+          config.environment = "test"
+          config.migrations_path = "/tmp/curator_migrations"
+          config.bucket_prefix = 'curator'
+          config.riak_config_file = "config/riak.yml"
+        end
+      end
 
       context "collection settings" do
         it "returns settings" do
