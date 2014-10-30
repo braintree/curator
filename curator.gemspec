@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'curator'
-  s.version     = '0.10.0'
+  s.version     = '0.11.0'
   s.summary     = "Model and repository framework"
   s.description = "Model and repository framework"
   s.authors     = ["Braintree"]
@@ -12,5 +12,5 @@ Gem::Specification.new do |s|
   s.add_dependency('activesupport', '>= 3.0.0')
   s.add_dependency('activemodel', '>= 3.0.0')
   s.add_dependency('json')
-  s.add_dependency('riak-client', '>= 1.4.3')
+  s.add_dependency('riak-client', '~> 1.4.3')
 end
