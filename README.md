@@ -262,18 +262,17 @@ We appreciate contributions of any kind. If you have code to show us, open a pul
 
 Please include tests with code contributions, and try to follow conventions that you find in the code.
 
-Riak is required in order to run the curator specs. After installing Riak, change the backend to eleveldb. For example, here is how to install on OS X using [homebrew](http://mxcl.github.com/homebrew/):
+Riak is required in order to run the curator specs. After installing Riak, change the backend to leveldb. For example, here is how to install on OS X using [homebrew](http://mxcl.github.com/homebrew/):
 
 ```bash
 brew install riak
-edit /usr/local/Cellar/riak/<riak version>/libexec/etc/app.config
+edit /usr/local/Cellar/riak/<riak version>/libexec/etc/riak.conf
 
   change
-    {storage_backend, riak_kv_bitcask_backend},
+    storage_backend = bitcask
   to
-    {storage_backend, riak_kv_eleveldb_backend},
+    storage_backend = leveldb
 
-ulimit -n 1024
 riak start
 ```
 
