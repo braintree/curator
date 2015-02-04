@@ -163,7 +163,7 @@ This ensures that our tests start with an empty Riak, and the data gets removed 
 
 ## Data Migrations
 
-See [Data migrations for NoSQL with Curator](http://www.braintreepayments.com/devblog/data-migrations-for-nosql-with-curator) for an overview of data migrations. They have also been implemented in the [curator_rails_example](/braintree/curator_rails_example).
+See [Data migrations for NoSQL with Curator](http://www.braintreepayments.com/devblog/data-migrations-for-nosql-with-curator) for an overview of data migrations. They have also been implemented in the [curator_rails_example](https://github.com/braintree/curator_rails_example).
 
 Each model instance has an associated version that is persisted along with the object. By default, all instances start at version 0. You can change the default by specifying the `current_version` in the model class:
 
