@@ -32,7 +32,7 @@ module Curator
       end
 
       def default_collection_name
-        ActiveSupport::Inflector.tableize(klass)
+        ActiveSupport::Inflector.tableize(klass.name)
       end
 
       def data_store
