@@ -5,7 +5,7 @@ PATH
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       json
-      riak-client (~> 2.0.0)
+      riak-client (~> 2.3.2)
 
 GEM
   remote: https://rubygems.org/
@@ -91,10 +91,10 @@ GEM
     rake_commit (0.12.0)
     rdoc (3.12)
       json (~> 1.4)
-    riak-client (2.0.0)
-      beefcake (~> 1.0)
+    riak-client (2.3.2)
+      beefcake (~> 1.1)
       cert_validator (~> 0.0.1)
-      i18n (>= 0.4.0)
+      i18n (>= 0.6.8)
       innertube (~> 1.0.2)
       multi_json (~> 1.0)
     rspec (2.8.0)
