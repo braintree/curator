@@ -18,7 +18,7 @@ describe Curator::Repository do
         config.environment = "test"
         config.migrations_path = "/tmp/curator_migrations"
         config.bucket_prefix = 'curator'
-        config.riak_config_file = File.expand_path(File.dirname(__FILE__) + "/../../config/riak.yml")
+        config.riak_config_file = File.expand_path(File.dirname(__FILE__) + "/../../config/riak_with_protobuf.yml")
       end
     end
 

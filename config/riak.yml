@@ -1,3 +1,0 @@
-test:
-  :http_port: 8098
-  :host: localhost

@@ -14,8 +14,13 @@ module Curator
           config.environment = "test"
           config.migrations_path = "/tmp/curator_migrations"
           config.bucket_prefix = 'curator'
-          config.riak_config_file = "config/riak.yml"
+          config.riak_config_file = "config/riak_with_protobuf.yml"
         end
+      end
+
+      it "should configure the client to use protocol buffers" do
+        client = Curator.config.data_store.client
+        client.node.should be_protobuffs
       end
 
       context "collection settings" do
@@ -53,13 +58,11 @@ module Curator
             File.should_receive(:read).and_return(<<-YML)
             test:
               :host: somehost
-              :http_port: 1234
               :pb_port: 5678
             YML
             data_store.instance_variable_set('@client', nil)
             client = data_store.client
             client.node.host.should == "somehost"
-            client.node.http_port.should == 1234
             client.node.pb_port.should == 5678
           ensure
             data_store.instance_variable_set("@client", nil)
@@ -113,23 +116,6 @@ module Curator
           data_store.save(:collection_name => "fake_things", :key => "some_key", :value => {"k" => "v"})
           ::Riak.escaper = URI
           data_store.find_by_key("fake_things", "some_key").should == {:key => "some_key", :data => {"k" => "v"}}
-        end
-      end
-
-      context "using protocol buffers" do
-        with_config do
-          Curator.configure(:resettable_riak) do |config|
-            config.environment = "test"
-            config.riak_config_file = "config/riak_with_protobuf.yml"
-            config.bucket_prefix = 'curator'
-          end
-        end
-
-        include_examples "data_store"
-
-        it "should configure the client to use protocol buffers" do
-          client = Curator.config.data_store.client
-          client.node.should be_protobuffs
         end
       end
     end
