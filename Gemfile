@@ -6,7 +6,7 @@ gem 'rake', '0.9.2.2'
 
 group :development do
   gem 'rake_commit', '0.12.0'
-  gem 'rails', '~> 4.2.5'
+  gem 'rails', '~> 3.0'
 end
 
 group :test do

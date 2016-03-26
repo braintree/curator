@@ -22,8 +22,6 @@ then
   sudo service riak start
   sleep 15
 fi
-curl http://localhost:8098/ping
-java -version
 sudo ls -ls /var/log/riak
 sudo cat /etc/riak/riak.conf
 sudo ls -l /etc/riak
