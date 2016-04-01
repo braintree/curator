@@ -5,7 +5,7 @@ describe Curator::Generators::ModelGenerator do
   destination TMP_PATH
 
   before { prepare_destination }
-  after { FileUtils.rm_r TMP_PATH }
+  after { FileUtils.rm_rf TMP_PATH }
 
   describe 'the generated files' do
     before do

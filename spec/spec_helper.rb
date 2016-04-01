@@ -3,6 +3,7 @@ require 'curator'
 require 'timecop'
 
 require 'ammeter/init'
+require 'set'
 
 TMP_PATH = File.expand_path(File.dirname(__FILE__) + '/../tmp')
 
