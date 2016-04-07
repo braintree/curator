@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    curator (0.11.2)
+    curator (0.12.0)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       json
@@ -135,6 +135,3 @@ DEPENDENCIES
   rake_commit (= 0.12.0)
   rspec (= 2.8.0)
   timecop (= 0.3.5)
-
-BUNDLED WITH
-   1.11.2
