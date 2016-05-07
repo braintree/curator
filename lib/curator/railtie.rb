@@ -5,7 +5,7 @@ module Curator
         config.bucket_prefix = app.class.name.split("::").first.underscore
         config.environment = Rails.env
         config.migrations_path = Rails.root.join('db', 'migrate')
-        config.riak_config_file = Rails.root.join('config', 'riak_with_protobuf.yml')
+        config.riak_config_file = Rails.root.join('config', 'riak.yml')
       end
     end
 
