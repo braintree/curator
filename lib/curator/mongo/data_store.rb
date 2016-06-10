@@ -4,7 +4,7 @@ require 'yaml'
 module Curator
   module Mongo
     class DataStore
-      def initializer(config = Curator.config)
+      def initialize(config = Curator.config)
         @config = config
       end
 
