@@ -3,7 +3,7 @@ module Curator::Memory
     include Curator::Configuration
 
     def data_store
-      Curator::Memory::DataStore.new
+      Curator::Memory::DataStore.new(self)
     end
   end
 end

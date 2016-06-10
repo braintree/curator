@@ -5,7 +5,7 @@ module Curator::Mongo
     attr_accessor :database, :mongo_config_file
 
     def data_store
-      Curator::Mongo::DataStore.new
+      Curator::Mongo::DataStore.new(self)
     end
   end
 end

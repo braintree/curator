@@ -4,16 +4,20 @@ require 'yaml'
 module Curator
   module Riak
     class DataStore
+      def initialize(config = Curator.config)
+        @config = config
+      end
+
       def client
         return @client if @client
-        return @client = Curator.config.client if Curator.config.client
+        return @client = @config.client if @config.client
 
-        yml_config = YAML.load(File.read(Curator.config.riak_config_file))[Curator.config.environment]
+        yml_config = YAML.load(File.read(@config.riak_config_file))[@config.environment]
         @client = ::Riak::Client.new(yml_config)
       end
 
       def bucket_prefix
-        "#{Curator.config.bucket_prefix}:#{Curator.config.environment}"
+        "#{@config.bucket_prefix}:#{@config.environment}"
       end
 
       def delete(bucket_name, key)

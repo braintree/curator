@@ -4,12 +4,16 @@ require 'yaml'
 module Curator
   module Mongo
     class DataStore
+      def initializer(config = Curator.config)
+        @config = config
+      end
+
       def client
         return @client if @client
 
-        if Curator.config.client
-          @client        = Curator.config.client
-          @database_name = Curator.config.database
+        if @config.client
+          @client        = @config.client
+          @database_name = @config.database
           return @client
         end
 
@@ -21,7 +25,7 @@ module Curator
           return @client
         end
 
-        config = YAML.load(File.read(Curator.config.mongo_config_file))[Curator.config.environment]
+        config = YAML.load(File.read(@config.mongo_config_file))[@config.environment]
         config = config.symbolize_keys
 
         host = config.delete(:host)
@@ -107,7 +111,7 @@ module Curator
       end
 
       def default_db_name
-        "#{Curator.config.database}:#{Curator.config.environment}"
+        "#{@config.database}:#{@config.environment}"
       end
 
       def _db_name

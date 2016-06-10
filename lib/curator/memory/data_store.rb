@@ -3,6 +3,9 @@ require 'ostruct'
 module Curator
   module Memory
     class DataStore
+      def initialize(config = Curator.config)
+        @config = config
+      end
 
       def settings(bucket_name)
         {}
@@ -122,7 +125,7 @@ module Curator
       end
 
       def _bucket_name(name)
-        "#{Curator.config.environment}:#{name}"
+        "#{@config.environment}:#{name}"
       end
     end
   end
