@@ -6,7 +6,7 @@ module Curator
     class DataStore < Riak::DataStore
       def bucket_prefix
         job = "#{ENV['JOB_NAME'].gsub(/[^[:alnum:]]/, '_')}" if ENV['JOB_NAME'].present?
-        [Curator.config.bucket_prefix, job, Curator.config.environment].compact.join(':')
+        [@config.bucket_prefix, job, @config.environment].compact.join(':')
       end
 
       def exclude_from_reset(&block)
